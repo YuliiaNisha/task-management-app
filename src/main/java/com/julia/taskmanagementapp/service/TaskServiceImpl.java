@@ -2,10 +2,14 @@ package com.julia.taskmanagementapp.service;
 
 import com.julia.taskmanagementapp.dto.CreateTaskRequestDto;
 import com.julia.taskmanagementapp.dto.TaskDto;
+import com.julia.taskmanagementapp.exception.EntityNotFoundException;
 import com.julia.taskmanagementapp.mapper.TaskMapper;
 import com.julia.taskmanagementapp.model.Task;
+import com.julia.taskmanagementapp.repository.ProjectRepository;
 import com.julia.taskmanagementapp.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class TaskServiceImpl implements TaskService {
     private final TaskMapper mapper;
     private final TaskRepository taskRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public TaskDto create(CreateTaskRequestDto requestDto) {
@@ -20,5 +25,18 @@ public class TaskServiceImpl implements TaskService {
         task.setStatus(Task.Status.NOT_STARTED);
         Task savedTask = taskRepository.save(task);
         return mapper.toDto(savedTask);
+    }
+
+    @Override
+    public Page<TaskDto> getTasksForProject(Long projectId, Pageable pageable) {
+        projectExists(projectId);
+        return taskRepository.findByProjectId(projectId, pageable)
+                .map(mapper::toDto);
+    }
+
+    private void projectExists(Long projectId) {
+        if (!projectRepository.existsById(projectId)) {
+            throw new EntityNotFoundException("There is no project by id: " + projectId);
+        }
     }
 }
