@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = EnumFieldValidator.class)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.RECORD_COMPONENT})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidEnumFieldValue {
     String message() default "{constraints.validfieldvalue}";

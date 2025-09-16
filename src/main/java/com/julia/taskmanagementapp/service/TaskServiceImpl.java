@@ -2,6 +2,7 @@ package com.julia.taskmanagementapp.service;
 
 import com.julia.taskmanagementapp.dto.CreateTaskRequestDto;
 import com.julia.taskmanagementapp.dto.TaskDto;
+import com.julia.taskmanagementapp.dto.UpdateTaskRequestDto;
 import com.julia.taskmanagementapp.exception.EntityNotFoundException;
 import com.julia.taskmanagementapp.mapper.TaskMapper;
 import com.julia.taskmanagementapp.model.Task;
@@ -32,6 +33,23 @@ public class TaskServiceImpl implements TaskService {
         projectExists(projectId);
         return taskRepository.findByProjectId(projectId, pageable)
                 .map(mapper::toDto);
+    }
+
+    @Override
+    public TaskDto getTaskById(Long taskId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(
+                () -> new EntityNotFoundException("There is no task by id: " + taskId)
+        );
+        return mapper.toDto(task);
+    }
+
+    @Override
+    public TaskDto updateTask(Long taskId, UpdateTaskRequestDto requestDto) {
+        Task task = taskRepository.findById(taskId).orElseThrow(
+                () -> new EntityNotFoundException("There is no task by id: " + taskId)
+        );
+        mapper.updateTask(task, requestDto);
+        return mapper.toDto(taskRepository.save(task));
     }
 
     private void projectExists(Long projectId) {
