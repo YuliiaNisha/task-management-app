@@ -36,20 +36,28 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto getTaskById(Long taskId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(
-                () -> new EntityNotFoundException("There is no task by id: " + taskId)
+    public TaskDto getTaskById(Long id) {
+        Task task = taskRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("There is no task by id: " + id)
         );
         return mapper.toDto(task);
     }
 
     @Override
-    public TaskDto updateTask(Long taskId, UpdateTaskRequestDto requestDto) {
-        Task task = taskRepository.findById(taskId).orElseThrow(
-                () -> new EntityNotFoundException("There is no task by id: " + taskId)
+    public TaskDto updateTask(Long id, UpdateTaskRequestDto requestDto) {
+        Task task = taskRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("There is no task by id: " + id)
         );
         mapper.updateTask(task, requestDto);
         return mapper.toDto(taskRepository.save(task));
+    }
+
+    @Override
+    public void delete(Long id) {
+        taskRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("There is no task by id: " + id)
+        );
+        taskRepository.deleteById(id);
     }
 
     private void projectExists(Long projectId) {

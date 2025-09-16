@@ -14,7 +14,9 @@ public interface TaskService {
 
     Page<TaskDto> getTasksForProject(Long projectId, Pageable pageable);
 
-    TaskDto getTaskById(Long taskId);
+    TaskDto getTaskById(Long id);
 
-    TaskDto updateTask(Long taskId, UpdateTaskRequestDto requestDto);
+    TaskDto updateTask(Long id, UpdateTaskRequestDto requestDto);
+
+    void delete(Long id);
 }

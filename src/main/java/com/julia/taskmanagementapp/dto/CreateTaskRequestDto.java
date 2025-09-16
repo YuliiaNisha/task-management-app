@@ -14,19 +14,19 @@ import java.time.LocalDate;
         message = "Invalid priority value. "
 )
 public record CreateTaskRequestDto(
-        @NotBlank
+        @NotBlank(message = "Task name is required")
         String name,
-        @NotBlank
+        @NotBlank(message = "Description is required")
         @Size(max = 1000, message = "Description must be less than 1000 characters")
         String description,
-        @NotBlank
+        @NotBlank(message = "Priority is required")
         String priority,
         @NotNull(message = "Due date is required")
         @FutureOrPresent(message = "Due date cannot be in the past")
         LocalDate dueDate,
-        @NotNull
+        @NotNull(message = "Project id is required")
         Long projectId,
-        @NotNull
+        @NotNull(message = "Assignee id is required")
         Long assigneeId
 ) {
 }
