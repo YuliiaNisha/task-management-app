@@ -16,23 +16,23 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
-    private final TaskMapper mapper;
+    private final TaskMapper taskMapper;
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
 
     @Override
     public TaskDto create(CreateTaskRequestDto requestDto) {
-        Task task = mapper.toModel(requestDto);
+        Task task = taskMapper.toModel(requestDto);
         task.setStatus(Task.Status.NOT_STARTED);
         Task savedTask = taskRepository.save(task);
-        return mapper.toDto(savedTask);
+        return taskMapper.toDto(savedTask);
     }
 
     @Override
     public Page<TaskDto> getTasksForProject(Long projectId, Pageable pageable) {
         projectExists(projectId);
         return taskRepository.findByProjectId(projectId, pageable)
-                .map(mapper::toDto);
+                .map(taskMapper::toDto);
     }
 
     @Override
@@ -40,16 +40,16 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("There is no task by id: " + id)
         );
-        return mapper.toDto(task);
+        return taskMapper.toDto(task);
     }
 
     @Override
-    public TaskDto updateTask(Long id, UpdateTaskRequestDto requestDto) {
+    public TaskDto update(Long id, UpdateTaskRequestDto requestDto) {
         Task task = taskRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("There is no task by id: " + id)
         );
-        mapper.updateTask(task, requestDto);
-        return mapper.toDto(taskRepository.save(task));
+        taskMapper.updateTask(task, requestDto);
+        return taskMapper.toDto(taskRepository.save(task));
     }
 
     @Override
