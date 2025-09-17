@@ -47,7 +47,7 @@ public class Task {
     @Column(nullable = false)
     private Long assigneeId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "is_deleted")
     private boolean isDeleted = false;
 
     public enum Priority {
