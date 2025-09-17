@@ -1,6 +1,5 @@
 package com.julia.taskmanagementapp.dto;
 
-import com.julia.taskmanagementapp.model.Task;
 import java.time.LocalDate;
 
 public record TaskDto(

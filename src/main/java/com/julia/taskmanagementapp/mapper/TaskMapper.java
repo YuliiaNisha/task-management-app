@@ -11,6 +11,8 @@ import org.mapstruct.MappingTarget;
 @Mapper(config = MapperConfig.class)
 public interface TaskMapper {
     Task toModel(CreateTaskRequestDto requestDto);
+
     TaskDto toDto(Task task);
+
     void updateTask(@MappingTarget Task task, UpdateTaskRequestDto requestDto);
 }
