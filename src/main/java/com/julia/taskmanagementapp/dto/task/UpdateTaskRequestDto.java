@@ -1,4 +1,4 @@
-package com.julia.taskmanagementapp.dto;
+package com.julia.taskmanagementapp.dto.task;
 
 import com.julia.taskmanagementapp.model.Task;
 import com.julia.taskmanagementapp.validation.ValidEnumFieldValue;

@@ -1,9 +1,9 @@
 package com.julia.taskmanagementapp.controller;
 
-import com.julia.taskmanagementapp.dto.CreateTaskRequestDto;
-import com.julia.taskmanagementapp.dto.TaskDto;
-import com.julia.taskmanagementapp.dto.UpdateTaskRequestDto;
-import com.julia.taskmanagementapp.service.TaskService;
+import com.julia.taskmanagementapp.dto.task.CreateTaskRequestDto;
+import com.julia.taskmanagementapp.dto.task.TaskDto;
+import com.julia.taskmanagementapp.dto.task.UpdateTaskRequestDto;
+import com.julia.taskmanagementapp.service.task.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
