@@ -82,6 +82,16 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         );
     }
 
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    protected ResponseEntity<Object> handleEntityAlreadyExistsException(
+            EntityAlreadyExistsException ex
+    ) {
+        return new ResponseEntity<>(
+                getBody(List.of(ex.getMessage())),
+                HttpStatus.CONFLICT
+        );
+    }
+
     private String getErrorMessage(ObjectError error) {
         if (error instanceof FieldError fieldError) {
             return fieldError.getField() + ": " + error.getDefaultMessage();
