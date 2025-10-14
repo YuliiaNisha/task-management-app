@@ -1,8 +1,8 @@
-package com.julia.taskmanagementapp.service;
+package com.julia.taskmanagementapp.service.task;
 
-import com.julia.taskmanagementapp.dto.CreateTaskRequestDto;
-import com.julia.taskmanagementapp.dto.TaskDto;
-import com.julia.taskmanagementapp.dto.UpdateTaskRequestDto;
+import com.julia.taskmanagementapp.dto.task.CreateTaskRequestDto;
+import com.julia.taskmanagementapp.dto.task.TaskDto;
+import com.julia.taskmanagementapp.dto.task.UpdateTaskRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

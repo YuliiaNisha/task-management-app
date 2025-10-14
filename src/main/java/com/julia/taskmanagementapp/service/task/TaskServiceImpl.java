@@ -1,8 +1,8 @@
-package com.julia.taskmanagementapp.service;
+package com.julia.taskmanagementapp.service.task;
 
-import com.julia.taskmanagementapp.dto.CreateTaskRequestDto;
-import com.julia.taskmanagementapp.dto.TaskDto;
-import com.julia.taskmanagementapp.dto.UpdateTaskRequestDto;
+import com.julia.taskmanagementapp.dto.task.CreateTaskRequestDto;
+import com.julia.taskmanagementapp.dto.task.TaskDto;
+import com.julia.taskmanagementapp.dto.task.UpdateTaskRequestDto;
 import com.julia.taskmanagementapp.exception.EntityNotFoundException;
 import com.julia.taskmanagementapp.mapper.TaskMapper;
 import com.julia.taskmanagementapp.model.Task;

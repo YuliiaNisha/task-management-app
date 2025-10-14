@@ -1,4 +1,4 @@
-package com.julia.taskmanagementapp.dto;
+package com.julia.taskmanagementapp.dto.task;
 
 import java.time.LocalDate;
 
