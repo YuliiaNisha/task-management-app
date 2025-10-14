@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,7 +60,8 @@ public class Task {
     @JoinTable(
             name = "task_labels",
             joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "label_id")
+            inverseJoinColumns = @JoinColumn(name = "label_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"task_id", "label_id"})
     )
     private Set<Label> labels = new HashSet<>();
 
