@@ -25,17 +25,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto getProjectById(Long id) {
-        Project project = projectRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("There is no project by id: " + id)
-        );
+        Project project = findProject(id);
         return projectMapper.toDto(project);
     }
 
     @Override
     public ProjectDto update(Long id, UpdateProjectRequestDto requestDto) {
-        Project project = projectRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("There is no project by id: " + id)
-        );
+        Project project = findProject(id);
         projectMapper.update(project, requestDto);
         return projectMapper.toDto(projectRepository.save(project));
     }
@@ -50,5 +46,11 @@ public class ProjectServiceImpl implements ProjectService {
         if (!projectRepository.existsById(id)) {
             throw new EntityNotFoundException("There is no project by id: " + id);
         }
+    }
+
+    private Project findProject(Long id) {
+        return projectRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("There is no project by id: " + id)
+        );
     }
 }
