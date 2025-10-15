@@ -74,7 +74,8 @@ public class LabelServiceImpl implements LabelService {
                     labelRepository::existsByColorIgnoreCase,
                     new EntityAlreadyExistsException(
                             "Cannot update label with color '" + color
-                                    + "' - This color is already in use. Please choose another color."
+                                    + "' - This color is already in use. "
+                            + "Please choose another color."
                     )
             );
         }

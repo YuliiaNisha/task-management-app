@@ -3,7 +3,6 @@ package com.julia.taskmanagementapp.service.label;
 import com.julia.taskmanagementapp.dto.label.CreateLabelRequestDto;
 import com.julia.taskmanagementapp.dto.label.LabelDto;
 import com.julia.taskmanagementapp.dto.label.UpdateLabelRequestDto;
-import com.julia.taskmanagementapp.model.Label;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

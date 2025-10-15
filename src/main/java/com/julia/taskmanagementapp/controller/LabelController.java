@@ -3,7 +3,6 @@ package com.julia.taskmanagementapp.controller;
 import com.julia.taskmanagementapp.dto.label.CreateLabelRequestDto;
 import com.julia.taskmanagementapp.dto.label.LabelDto;
 import com.julia.taskmanagementapp.dto.label.UpdateLabelRequestDto;
-import com.julia.taskmanagementapp.model.Label;
 import com.julia.taskmanagementapp.service.label.LabelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
