@@ -48,6 +48,12 @@ public class LabelServiceImpl implements LabelService {
         return labelMapper.toDto(labelRepository.save(label));
     }
 
+    @Override
+    public void delete(Long id) {
+        Label label = findLabelById(id);
+        labelRepository.delete(label);
+    }
+
     private void checkValuesAlreadyExistOrDuplicate(
             String name, String color,
             String currentName, String currentColor

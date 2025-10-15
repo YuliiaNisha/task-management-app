@@ -13,4 +13,6 @@ public interface LabelService {
     Page<LabelDto> getLabels(Pageable pageable);
 
     LabelDto update(Long id, UpdateLabelRequestDto requestDto);
+
+    void delete(Long id);
 }
