@@ -1,7 +1,9 @@
 package com.julia.taskmanagementapp.service.user;
 
+import com.julia.taskmanagementapp.dto.user.UserProfileInfoDto;
 import com.julia.taskmanagementapp.dto.user.UserRegistrationRequestDto;
 import com.julia.taskmanagementapp.dto.user.UserResponseDto;
+import com.julia.taskmanagementapp.exception.EntityNotFoundException;
 import com.julia.taskmanagementapp.exception.RegistrationException;
 import com.julia.taskmanagementapp.mapper.UserMapper;
 import com.julia.taskmanagementapp.model.User;
@@ -28,6 +30,16 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(requestDto.password()));
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
+    }
+
+    @Override
+    public UserProfileInfoDto getUserProfileInfo(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "There is no user by id: " + id
+                )
+        );
+        return userMapper.toProfileInfo(user);
     }
 
     private void checkUserAlreadyExists(String email) throws RegistrationException {
