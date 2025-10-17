@@ -1,5 +1,6 @@
 package com.julia.taskmanagementapp.service.user;
 
+import com.julia.taskmanagementapp.dto.user.UpdateProfileInfoRequestDto;
 import com.julia.taskmanagementapp.dto.user.UserProfileInfoDto;
 import com.julia.taskmanagementapp.dto.user.UserRegistrationRequestDto;
 import com.julia.taskmanagementapp.dto.user.UserResponseDto;
@@ -20,11 +21,11 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
+
     @Override
     public UserResponseDto registerUser(
             UserRegistrationRequestDto requestDto
-    ) throws RegistrationException {
+    ) {
         checkUserAlreadyExists(requestDto.email());
         User user = userMapper.toModel(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.password()));
@@ -33,16 +34,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileInfoDto getUserProfileInfo(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(
-                        "There is no user by id: " + id
-                )
-        );
+    public UserProfileInfoDto getUserProfileInfo(User user) {
         return userMapper.toProfileInfo(user);
     }
 
-    private void checkUserAlreadyExists(String email) throws RegistrationException {
+    @Transactional
+    @Override
+    public UserProfileInfoDto updateProfileInfo(
+            UpdateProfileInfoRequestDto requestDto,
+            User user
+    ) {
+        if (requestDto.email() != null && !requestDto.email().equalsIgnoreCase(
+                                user.getEmail()
+                        )
+        ) {
+            checkUserAlreadyExists(requestDto.email());
+        }
+        userMapper.updateProfileInfo(user, requestDto);
+        if (requestDto.password() != null) {
+            user.setPassword(passwordEncoder.encode(requestDto.password()));
+        }
+        User savedUser = userRepository.save(user);
+        return userMapper.toProfileInfo(savedUser);
+    }
+
+    private void checkUserAlreadyExists(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new RegistrationException("Can't register user. User with email: "
                     + email + " is already registered.");

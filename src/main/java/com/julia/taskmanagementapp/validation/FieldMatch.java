@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FieldMatch {
     String message() default "{constraints.fieldmatch}";
+    String errorWithValidationMessage() default "{constraints.fieldmatchValidationError}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 

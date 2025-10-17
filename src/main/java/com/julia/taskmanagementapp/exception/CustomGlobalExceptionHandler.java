@@ -1,5 +1,6 @@
 package com.julia.taskmanagementapp.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -89,6 +90,16 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(
                 getBody(List.of(ex.getMessage())),
                 HttpStatus.CONFLICT
+        );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<Object> handleIllegalArgumentException(
+            IllegalArgumentException ex
+    ) {
+        return new ResponseEntity<>(
+                getBody(List.of(ex.getMessage())),
+                HttpStatus.BAD_REQUEST
         );
     }
 
