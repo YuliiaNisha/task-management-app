@@ -13,6 +13,7 @@ import com.julia.taskmanagementapp.model.Role;
 import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.repository.RoleRepository;
 import com.julia.taskmanagementapp.repository.UserRepository;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,15 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private Role roleUser;
+
+    @PostConstruct
+    private void init() {
+        roleUser = roleRepository.findByRole(Role.RoleName.ROLE_USER)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find role: " + Role.RoleName.ROLE_USER)
+                );
+    }
 
     @Override
     public UserResponseDto registerUser(
@@ -34,6 +44,7 @@ public class UserServiceImpl implements UserService {
         checkUserAlreadyExists(requestDto.email());
         User user = userMapper.toModel(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.password()));
+        user.getRoles().add(roleUser);
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
