@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ProjectService {
-    ProjectDto create(CreateProjectRequestDto requestDto);
+    ProjectDto create(CreateProjectRequestDto requestDto, Long id);
 
     Page<ProjectDto> getUserProjects(Long userId, Pageable pageable);
 

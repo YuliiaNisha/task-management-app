@@ -23,9 +23,10 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectMapper projectMapper;
 
     @Override
-    public ProjectDto create(CreateProjectRequestDto requestDto) {
+    public ProjectDto create(CreateProjectRequestDto requestDto, Long id) {
         Project project = projectMapper.toModel(requestDto);
         project.setStatus(Project.Status.INITIATED);
+        project.setCreatedById(id);
         return projectMapper.toDto(projectRepository.save(project));
     }
 

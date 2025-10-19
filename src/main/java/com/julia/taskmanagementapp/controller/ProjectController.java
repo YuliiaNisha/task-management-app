@@ -29,8 +29,11 @@ public class ProjectController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProjectDto create(@RequestBody @Valid CreateProjectRequestDto requestDto) {
-        return projectService.create(requestDto);
+    public ProjectDto create(
+            @RequestBody @Valid CreateProjectRequestDto requestDto,
+            @AuthenticationPrincipal User user
+    ) {
+        return projectService.create(requestDto, user.getId());
     }
 
     @GetMapping

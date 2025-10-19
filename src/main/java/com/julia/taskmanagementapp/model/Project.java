@@ -40,6 +40,9 @@ public class Project {
     @Column(nullable = false)
     private Status status;
 
+    @Column(nullable = false)
+    private Long createdById;
+
     @Column(nullable = false, name = "is_deleted")
     private boolean isDeleted = false;
 
