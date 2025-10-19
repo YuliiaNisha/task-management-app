@@ -6,7 +6,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Set;
 
 @Constraint(validatedBy = EnumCollectionValidator.class)
 @Target(ElementType.FIELD)

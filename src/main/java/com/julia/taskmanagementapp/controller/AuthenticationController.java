@@ -4,7 +4,6 @@ import com.julia.taskmanagementapp.dto.user.UserLoginRequestDto;
 import com.julia.taskmanagementapp.dto.user.UserLoginResponseDto;
 import com.julia.taskmanagementapp.dto.user.UserRegistrationRequestDto;
 import com.julia.taskmanagementapp.dto.user.UserResponseDto;
-import com.julia.taskmanagementapp.exception.RegistrationException;
 import com.julia.taskmanagementapp.security.AuthenticationService;
 import com.julia.taskmanagementapp.service.user.UserService;
 import jakarta.validation.Valid;

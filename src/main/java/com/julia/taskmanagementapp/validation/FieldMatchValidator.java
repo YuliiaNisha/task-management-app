@@ -1,6 +1,5 @@
 package com.julia.taskmanagementapp.validation;
 
-import com.julia.taskmanagementapp.exception.FieldMatchValidationException;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.lang.reflect.Field;

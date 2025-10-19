@@ -1,6 +1,5 @@
 package com.julia.taskmanagementapp.exception;
 
-import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;

@@ -14,10 +14,7 @@ import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.repository.RoleRepository;
 import com.julia.taskmanagementapp.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +26,6 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-
 
     @Override
     public UserResponseDto registerUser(

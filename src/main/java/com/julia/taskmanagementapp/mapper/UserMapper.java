@@ -14,7 +14,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 
 @Mapper(config = MapperConfig.class)
 public interface UserMapper {

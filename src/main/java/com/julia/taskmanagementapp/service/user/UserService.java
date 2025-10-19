@@ -6,9 +6,7 @@ import com.julia.taskmanagementapp.dto.user.UserProfileInfoDto;
 import com.julia.taskmanagementapp.dto.user.UserRegistrationRequestDto;
 import com.julia.taskmanagementapp.dto.user.UserResponseDto;
 import com.julia.taskmanagementapp.dto.user.UserResponseWithRolesDto;
-import com.julia.taskmanagementapp.exception.RegistrationException;
 import com.julia.taskmanagementapp.model.User;
-import org.springframework.web.bind.annotation.PathVariable;
 
 public interface UserService {
     UserResponseDto registerUser(

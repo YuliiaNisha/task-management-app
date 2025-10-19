@@ -7,7 +7,8 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class EnumCollectionValidator implements ConstraintValidator<ValidEnumCollection, Collection<String>> {
+public class EnumCollectionValidator
+        implements ConstraintValidator<ValidEnumCollection, Collection<String>> {
     private Set<String> allowedValues;
 
     @Override
