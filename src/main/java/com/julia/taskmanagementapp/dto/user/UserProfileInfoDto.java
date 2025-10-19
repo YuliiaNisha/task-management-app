@@ -1,7 +1,6 @@
 package com.julia.taskmanagementapp.dto.user;
 
-public record UserResponseDto(
-        Long id,
+public record UserProfileInfoDto(
         String profileUsername,
         String email,
         String firstName,

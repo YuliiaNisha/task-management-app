@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
         message = "Password and repeat password must match")
 public record UserRegistrationRequestDto(
         @NotBlank(message = "Username is required. Please provide username.")
-        String username,
+        String profileUsername,
         @NotBlank(message = "Password is required. Please provide your password.")
         @Size(min = 8, max = 25, message = "Password must be between 8 and 25 digits")
         String password,

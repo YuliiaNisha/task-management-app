@@ -1,10 +1,13 @@
 package com.julia.taskmanagementapp.dto.user;
 
-public record UserResponseDto(
+import java.util.Set;
+
+public record UserResponseWithRolesDto(
         Long id,
         String profileUsername,
         String email,
         String firstName,
-        String lastName
+        String lastName,
+        Set<String> roles
 ) {
 }

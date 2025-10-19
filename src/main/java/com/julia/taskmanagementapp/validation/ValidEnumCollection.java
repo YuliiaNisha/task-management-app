@@ -7,15 +7,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = FieldMatchValidator.class)
-@Target(ElementType.TYPE)
+@Constraint(validatedBy = EnumCollectionValidator.class)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FieldMatch {
-    String message() default "{constraints.fieldmatch}";
-    String errorWithValidationMessage() default "{constraints.fieldmatchValidationError}";
+public @interface ValidEnumCollection {
+    String message() default "{constraints.ValidEnumCollection}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-
-    String first();
-    String second();
+    Class<? extends Enum<?>> enumClass();
 }
