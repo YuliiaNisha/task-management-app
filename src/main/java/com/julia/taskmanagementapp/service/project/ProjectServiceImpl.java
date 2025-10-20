@@ -6,10 +6,8 @@ import com.julia.taskmanagementapp.dto.project.UpdateProjectRequestDto;
 import com.julia.taskmanagementapp.exception.EntityNotFoundException;
 import com.julia.taskmanagementapp.mapper.ProjectMapper;
 import com.julia.taskmanagementapp.model.Project;
-import com.julia.taskmanagementapp.model.Task;
 import com.julia.taskmanagementapp.repository.ProjectRepository;
 import com.julia.taskmanagementapp.repository.TaskRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,15 +30,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Page<ProjectDto> getUserProjects(Long userId, Pageable pageable) {
-        List<Long> projectIds = taskRepository.findByAssigneeId(userId)
-                .stream()
-                .map(Task::getProjectId)
-                .distinct()
-                .toList();
-        if (projectIds.isEmpty()) {
-            return Page.empty(pageable);
-        }
-        return projectRepository.findByIdIn(projectIds, pageable)
+        return projectRepository.findAllByCreatedById(userId, pageable)
                 .map(projectMapper::toDto);
     }
 

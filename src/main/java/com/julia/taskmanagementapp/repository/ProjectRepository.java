@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findByIdIn(List<Long> ids, Pageable pageable);
+
+    Page<Project> findAllByCreatedById(Long createdById, Pageable pageable);
 }
