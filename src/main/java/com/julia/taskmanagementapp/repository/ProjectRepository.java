@@ -1,13 +1,34 @@
 package com.julia.taskmanagementapp.repository;
 
 import com.julia.taskmanagementapp.model.Project;
-import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    Page<Project> findByIdIn(List<Long> ids, Pageable pageable);
+    @Query("SELECT DISTINCT p FROM Project p " +
+            "LEFT JOIN p.collaborators c " +
+            "WHERE p.creator.id = :userId OR c.id = :userId")
+    @EntityGraph(attributePaths = {"creator", "collaborators"})
+    Page<Project> findAllByCreatorOrCollaborators(
+            @Param("userId") Long userId, Pageable pageable
+    );
 
-    Page<Project> findAllByCreatedById(Long createdById, Pageable pageable);
+    @EntityGraph(attributePaths = {"creator", "collaborators"})
+    @Query("SELECT p FROM Project p " +
+            "WHERE p.id = :projectId AND p.creator.id = :userId")
+    Optional<Project> findByIdAndCreator(
+            @Param("projectId") Long id, @Param("userId") Long userId
+    );
+
+    @EntityGraph(attributePaths = {"creator", "collaborators"})
+    @Query("SELECT p FROM Project p " +
+            "WHERE p.id = :projectId AND p.creator.id = :userId")
+    Optional<Project> findByIdAndCreatorAndCollaborators(
+            @Param("projectId") Long id, @Param("userId") Long userId
+    );
 }

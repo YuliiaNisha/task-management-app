@@ -1,10 +1,12 @@
 package com.julia.taskmanagementapp.dto.project;
 
 import com.julia.taskmanagementapp.model.Project;
+import com.julia.taskmanagementapp.validation.UserIdsExistInDb;
 import com.julia.taskmanagementapp.validation.ValidEnumFieldValue;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Set;
 
 @ValidEnumFieldValue(
         fieldToValidate = "status",
@@ -18,6 +20,8 @@ public record UpdateProjectRequestDto(
         LocalDate startDate,
         @FutureOrPresent(message = "End date cannot be in the past")
         LocalDate endDate,
-        String status
+        String status,
+        @UserIdsExistInDb
+        Set<Long> collaboratorIds
 ) {
 }

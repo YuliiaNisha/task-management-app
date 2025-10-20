@@ -6,12 +6,23 @@ import com.julia.taskmanagementapp.dto.project.ProjectDto;
 import com.julia.taskmanagementapp.dto.project.UpdateProjectRequestDto;
 import com.julia.taskmanagementapp.model.Project;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(config = MapperConfig.class)
+@Mapper(config = MapperConfig.class, uses = UsersProvider.class)
 public interface ProjectMapper {
+    @Mapping(
+            source = "collaboratorIds",
+            target = "collaborators",
+            qualifiedByName = "getUsersFromIds"
+    )
     Project toModel(CreateProjectRequestDto requestDto);
 
+    @Mapping(
+            source = "collaborators",
+            target = "collaboratorIds",
+            qualifiedByName = "getIdsFromUsers"
+    )
     ProjectDto toDto(Project project);
 
     void update(@MappingTarget Project project, UpdateProjectRequestDto requestDto);

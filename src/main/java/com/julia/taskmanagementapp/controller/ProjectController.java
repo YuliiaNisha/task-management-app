@@ -33,7 +33,7 @@ public class ProjectController {
             @RequestBody @Valid CreateProjectRequestDto requestDto,
             @AuthenticationPrincipal User user
     ) {
-        return projectService.create(requestDto, user.getId());
+        return projectService.create(requestDto, user);
     }
 
     @GetMapping
@@ -45,20 +45,28 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ProjectDto getProjectById(@PathVariable Long id) {
-        return projectService.getProjectById(id);
+    public ProjectDto getProjectById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user
+    ) {
+        return projectService.getProjectById(id, user.getId());
     }
 
     @PutMapping("/{id}")
     public ProjectDto update(
-            @PathVariable Long id, @RequestBody @Valid UpdateProjectRequestDto requestDto
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateProjectRequestDto requestDto,
+            @AuthenticationPrincipal User user
     ) {
-        return projectService.update(id,requestDto);
+        return projectService.update(id,requestDto, user.getId());
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        projectService.delete(id);
+    public void delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user
+    ) {
+        projectService.delete(id, user.getId());
     }
 }
