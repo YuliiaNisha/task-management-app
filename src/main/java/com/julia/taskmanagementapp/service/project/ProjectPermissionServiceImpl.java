@@ -30,6 +30,34 @@ public class ProjectPermissionServiceImpl implements ProjectPermissionService {
     }
 
     @Override
+    public void checkProjectIfCreatorOrCollaborator(Long projectId, Long userId) {
+        if (!projectRepository.existsByIdAndCreatorAndCollaborators(projectId, userId)) {
+            throw new ForbiddenAccessException(
+                    "You do not have permission to access project with id: " + projectId
+            );
+        }
+    }
+
+    @Override
+    public void checkProjectIfCollaborator(Long projectId, Long userId) {
+        if (!projectRepository.existsByIdAndCollaborator(projectId, userId)) {
+            throw new ForbiddenAccessException(
+                    "User with id: " + userId
+                    + " is not a collaborator of the project with id: " + projectId
+            );
+        }
+    }
+
+    @Override
+    public void checkProjectIfCreator(Long projectId, Long userId) {
+        if (!projectRepository.existsByIdAndCreator(projectId, userId)) {
+            throw new ForbiddenAccessException(
+                    "You do not have permission to access project with id: " + projectId
+            );
+        }
+    }
+
+    @Override
     public Project getProjectByIdIfCreator(Long projectId, Long userId) {
         return projectRepository.findByIdAndCreator(projectId, userId)
                 .orElseThrow(

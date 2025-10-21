@@ -9,6 +9,8 @@ import com.julia.taskmanagementapp.model.Task;
 import com.julia.taskmanagementapp.repository.ProjectRepository;
 import com.julia.taskmanagementapp.repository.TaskRepository;
 import com.julia.taskmanagementapp.repository.UserRepository;
+import com.julia.taskmanagementapp.service.project.ProjectPermissionService;
+import jakarta.transaction.Transactional;
 import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,20 +22,15 @@ import org.springframework.stereotype.Service;
 public class TaskServiceImpl implements TaskService {
     private final TaskMapper taskMapper;
     private final TaskRepository taskRepository;
-    private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final ProjectPermissionService projectPermissionService;
 
     @Override
-    public TaskDto create(CreateTaskRequestDto requestDto) {
-        entityExistsById(
-                requestDto.projectId(),
-                projectRepository::existsById,
-                "project"
+    public TaskDto create(CreateTaskRequestDto requestDto, Long userId) {
+        projectPermissionService.checkProjectIfCreator(
+                requestDto.projectId(), userId
         );
-        entityExistsById(
-                requestDto.assigneeId(),
-                userRepository::existsById,
-                "user"
+        projectPermissionService.checkProjectIfCollaborator(
+                requestDto.projectId(), requestDto.assigneeId()
         );
         Task task = taskMapper.toModel(requestDto);
         task.setStatus(Task.Status.NOT_STARTED);
@@ -42,45 +39,37 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskDto> getTasksForProject(Long projectId, Pageable pageable) {
-        entityExistsById(
-                projectId,
-                projectRepository::existsById,
-                "project"
+    public Page<TaskDto> getTasksForProject(Long projectId, Long userId, Pageable pageable) {
+        projectPermissionService.checkProjectIfCreatorOrCollaborator(
+                projectId, userId
         );
         return taskRepository.findByProjectId(projectId, pageable)
                 .map(taskMapper::toDto);
     }
 
     @Override
-    public TaskDto getTaskById(Long id) {
+    public TaskDto getTaskById(Long id, Long userId) {
         Task task = findTaskById(id);
+        projectPermissionService.checkProjectIfCreatorOrCollaborator(
+                task.getProjectId(), userId
+        );
         return taskMapper.toDto(task);
     }
 
+    @Transactional
     @Override
-    public TaskDto update(Long id, UpdateTaskRequestDto requestDto) {
+    public TaskDto update(Long id, UpdateTaskRequestDto requestDto, Long userId) {
+        projectPermissionService.checkProjectIfCreator(id, userId);
         Task task = findTaskById(id);
         taskMapper.updateTask(task, requestDto);
         return taskMapper.toDto(taskRepository.save(task));
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id, Long userId) {
+        projectPermissionService.checkProjectIfCreator(id, userId);
         Task task = findTaskById(id);
         taskRepository.delete(task);
-    }
-
-    private void entityExistsById(
-            Long id,
-            Predicate<Long> existsPredicate,
-            String entityName
-    ) {
-        if (!existsPredicate.test(id)) {
-            throw new EntityNotFoundException(
-                    "There is no " + entityName + " by id: " + id
-            );
-        }
     }
 
     private Task findTaskById(Long id) {

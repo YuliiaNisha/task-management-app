@@ -31,4 +31,34 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Optional<Project> findByIdAndCreatorAndCollaborators(
             @Param("projectId") Long id, @Param("userId") Long userId
     );
+
+    @Query("""
+       SELECT CASE WHEN COUNT(p) > 0 THEN TRUE ELSE FALSE END
+       FROM Project p
+       LEFT JOIN p.collaborators c
+       WHERE p.id = :projectId
+         AND (p.creator.id = :userId OR c.id = :userId)
+       """)
+    boolean existsByIdAndCreatorAndCollaborators(
+            @Param("projectId") Long id, @Param("userId") Long userId
+    );
+
+    @Query("""
+       SELECT CASE WHEN COUNT(p) > 0 THEN TRUE ELSE FALSE END
+       FROM Project p
+       WHERE p.id = :projectId AND p.creator.id = :userId
+    """)
+    boolean existsByIdAndCreator(
+            @Param("projectId") Long id, @Param("userId") Long userId
+    );
+
+    @Query("""
+       SELECT CASE WHEN COUNT(p) > 0 THEN TRUE ELSE FALSE END
+       FROM Project p
+       JOIN p.collaborators c
+       WHERE p.id = :projectId AND c.id = :collaboratorId
+    """)
+    boolean existsByIdAndCollaborator(
+            @Param("projectId") Long id, @Param("collaboratorId") Long collaboratorId
+    );
 }

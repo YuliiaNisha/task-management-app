@@ -9,5 +9,11 @@ public interface ProjectPermissionService {
 
     Project getProjectByIdIfCreatorOrCollaborator(Long projectId, Long userId);
 
+    void checkProjectIfCreatorOrCollaborator(Long projectId, Long userId);
+
+    void checkProjectIfCreator(Long projectId, Long userId);
+
+    void checkProjectIfCollaborator(Long projectId, Long userId);
+
     Project getProjectByIdIfCreator(Long projectId, Long userId);
 }
