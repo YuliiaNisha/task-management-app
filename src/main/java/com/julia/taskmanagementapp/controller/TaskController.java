@@ -6,6 +6,7 @@ import com.julia.taskmanagementapp.dto.task.UpdateTaskRequestDto;
 import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.service.task.TaskService;
 import jakarta.validation.Valid;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,5 +71,23 @@ class TaskController {
             @AuthenticationPrincipal User user
     ) {
         taskService.delete(id, user.getId());
+    }
+
+    @PostMapping("/{taskId}/labels/{labelId}")
+    public TaskDto assignLabelToTask(
+            @PathVariable Long taskId,
+            @PathVariable Long labelId,
+            @AuthenticationPrincipal User user
+    ) {
+        return taskService.assignLabelToTask(taskId, labelId, user.getId());
+    }
+
+    @DeleteMapping("/{taskId}/labels/{labelId}")
+    public TaskDto removeLabelFromTask(
+            @PathVariable Long taskId,
+            @PathVariable Long labelId,
+            @AuthenticationPrincipal User user
+    ) {
+        return taskService.removeLabelFromTask(taskId,labelId, user.getId());
     }
 }

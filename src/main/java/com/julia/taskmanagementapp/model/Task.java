@@ -53,9 +53,6 @@ public class Task {
     @Column(nullable = false)
     private Long assigneeId;
 
-    @Column(nullable = false, name = "is_deleted")
-    private boolean isDeleted = false;
-
     @ManyToMany
     @JoinTable(
             name = "task_labels",
@@ -64,6 +61,9 @@ public class Task {
             uniqueConstraints = @UniqueConstraint(columnNames = {"task_id", "label_id"})
     )
     private Set<Label> labels = new HashSet<>();
+
+    @Column(nullable = false, name = "is_deleted")
+    private boolean isDeleted = false;
 
     public enum Priority {
         LOW,

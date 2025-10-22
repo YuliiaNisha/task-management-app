@@ -65,6 +65,16 @@ public class Project {
     @EqualsAndHashCode.Exclude
     private Set<User> collaborators = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "project_labels",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "label_id")
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<Label> labels = new HashSet<>();
+
     @Column(nullable = false, name = "is_deleted")
     private boolean isDeleted = false;
 

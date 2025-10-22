@@ -35,9 +35,10 @@ public class CommentController {
 
     @GetMapping
     public Page<CommentDto> getCommentsByTaskId(
-            Pageable pageable,
-            @RequestParam Long taskId
+            @RequestParam Long taskId,
+            @AuthenticationPrincipal User user,
+            Pageable pageable
     ) {
-        return commentService.getCommentsByTaskId(pageable, taskId);
+        return commentService.getCommentsByTaskId(taskId,user.getId(), pageable);
     }
 }

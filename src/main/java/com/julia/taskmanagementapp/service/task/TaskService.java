@@ -3,8 +3,11 @@ package com.julia.taskmanagementapp.service.task;
 import com.julia.taskmanagementapp.dto.task.CreateTaskRequestDto;
 import com.julia.taskmanagementapp.dto.task.TaskDto;
 import com.julia.taskmanagementapp.dto.task.UpdateTaskRequestDto;
+import com.julia.taskmanagementapp.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 
 public interface TaskService {
     TaskDto create(CreateTaskRequestDto requestDto, Long userId);
@@ -16,4 +19,8 @@ public interface TaskService {
     TaskDto update(Long id, UpdateTaskRequestDto requestDto, Long userId);
 
     void delete(Long id, Long userId);
+
+    TaskDto assignLabelToTask(Long taskId, Long labelId, Long userId);
+
+    TaskDto removeLabelFromTask(Long taskId, Long labelId, Long userId);
 }
