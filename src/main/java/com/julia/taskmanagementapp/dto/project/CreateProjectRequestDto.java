@@ -1,6 +1,5 @@
 package com.julia.taskmanagementapp.dto.project;
 
-import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.validation.UserIdsExistInDb;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;

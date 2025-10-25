@@ -11,11 +11,7 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(config = MapperConfig.class, uses = UsersProvider.class)
 public interface ProjectMapper {
-    @Mapping(
-            source = "collaboratorIds",
-            target = "collaborators",
-            qualifiedByName = "getUsersFromIds"
-    )
+    @Mapping(target = "collaborators", ignore = true)
     Project toModel(CreateProjectRequestDto requestDto);
 
     @Mapping(
@@ -25,5 +21,6 @@ public interface ProjectMapper {
     )
     ProjectDto toDto(Project project);
 
+    @Mapping(target = "collaborators", ignore = true)
     void update(@MappingTarget Project project, UpdateProjectRequestDto requestDto);
 }

@@ -6,7 +6,6 @@ import com.julia.taskmanagementapp.dto.task.UpdateTaskRequestDto;
 import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.service.task.TaskService;
 import jakarta.validation.Valid;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

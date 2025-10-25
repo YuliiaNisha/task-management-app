@@ -6,16 +6,13 @@ import com.julia.taskmanagementapp.exception.EntityNotFoundException;
 import com.julia.taskmanagementapp.mapper.CommentMapper;
 import com.julia.taskmanagementapp.model.Comment;
 import com.julia.taskmanagementapp.model.Task;
-import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.repository.CommentRepository;
 import com.julia.taskmanagementapp.repository.TaskRepository;
-import com.julia.taskmanagementapp.repository.UserRepository;
 import com.julia.taskmanagementapp.service.project.ProjectPermissionService;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -39,10 +36,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Page<CommentDto> getCommentsByTaskId(Long taskId, User user, Pageable pageable) {
+    public Page<CommentDto> getCommentsByTaskId(Long taskId, Long userId, Pageable pageable) {
         Task task = getTaskById(taskId);
         projectPermissionService.checkProjectIfCreatorOrCollaborator(
-                task.getProjectId(), user.getId()
+                task.getProjectId(), userId
         );
         return commentRepository.findCommentsByTaskId(pageable, taskId)
                 .map(commentMapper::toDto);

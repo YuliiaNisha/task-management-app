@@ -65,5 +65,5 @@ public class ProjectPermissionServiceImpl implements ProjectPermissionService {
                                 "You do not have permission to view project with id: " + projectId
                         )
                 );
-        }
+    }
 }
