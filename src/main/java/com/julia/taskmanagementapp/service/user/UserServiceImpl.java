@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
         checkUserAlreadyExists(requestDto.email());
         User user = userMapper.toModel(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.password()));
+        user.getRoles().add(getRoleUser());
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
@@ -82,5 +83,12 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("Can't register user. User with email: "
                     + email + " is already registered.");
         }
+    }
+
+    private Role getRoleUser() {
+        return roleRepository.findByRole(Role.RoleName.ROLE_USER)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find role: " + Role.RoleName.ROLE_USER)
+                );
     }
 }

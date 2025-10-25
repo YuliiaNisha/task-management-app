@@ -1,6 +1,7 @@
 package com.julia.taskmanagementapp.dto.project;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public record ProjectDto(
         Long id,
@@ -8,6 +9,7 @@ public record ProjectDto(
         String description,
         LocalDate startDate,
         LocalDate endDate,
-        String status
+        String status,
+        Set<Long> collaboratorIds
 ) {
 }

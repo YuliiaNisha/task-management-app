@@ -1,0 +1,199 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-labels
+      author: julia
+      changes:
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Urgent jt
+              - column:
+                  name: color
+                  value: Red
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'johnthomson@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Light jt
+              - column:
+                  name: color
+                  value: Red
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'johnthomson@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Hard jt
+              - column:
+                  name: color
+                  value: Red
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'johnthomson@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Important jt
+              - column:
+                  name: color
+                  value: Blue
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'johnthomson@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Optional jt
+              - column:
+                  name: color
+                  value: Green
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'johnthomson@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Urgent js
+              - column:
+                  name: color
+                  value: Red
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'janesmith@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Light js
+              - column:
+                  name: color
+                  value: Red
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'janesmith@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Hard js
+              - column:
+                  name: color
+                  value: Red
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'janesmith@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Important js
+              - column:
+                  name: color
+                  value: Blue
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'janesmith@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Optional js
+              - column:
+                  name: color
+                  value: Green
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'janesmith@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Urgent kb
+              - column:
+                  name: color
+                  value: Red
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kateboss@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Light kb
+              - column:
+                  name: color
+                  value: Red
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kateboss@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Hard kb
+              - column:
+                  name: color
+                  value: Red
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kateboss@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Important kb
+              - column:
+                  name: color
+                  value: Blue
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kateboss@gmail.com')"
+
+        - insert:
+            tableName: labels
+            columns:
+              - column:
+                  name: name
+                  value: Optional kb
+              - column:
+                  name: color
+                  value: Green
+              - column:
+                  name: created_by_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kateboss@gmail.com')"

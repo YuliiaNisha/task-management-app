@@ -7,13 +7,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface TaskService {
-    TaskDto create(CreateTaskRequestDto requestDto);
+    TaskDto create(CreateTaskRequestDto requestDto, Long userId);
 
-    Page<TaskDto> getTasksForProject(Long projectId, Pageable pageable);
+    Page<TaskDto> getTasksForProject(Long projectId, Long userId, Pageable pageable);
 
-    TaskDto getTaskById(Long id);
+    TaskDto getTaskById(Long id, Long userId);
 
-    TaskDto update(Long id, UpdateTaskRequestDto requestDto);
+    TaskDto update(Long id, UpdateTaskRequestDto requestDto, Long userId);
 
-    void delete(Long id);
+    void delete(Long id, Long userId);
+
+    TaskDto assignLabelToTask(Long taskId, Long labelId, Long userId);
+
+    TaskDto removeLabelFromTask(Long taskId, Long labelId, Long userId);
 }

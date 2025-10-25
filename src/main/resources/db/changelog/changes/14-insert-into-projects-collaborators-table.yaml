@@ -1,0 +1,85 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-project-collaborators
+      author: julia
+      changes:
+
+        - insert:
+            tableName: project_collaborators
+            columns:
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project A')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'johnthomson@gmail.com')"
+
+        - insert:
+            tableName: project_collaborators
+            columns:
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project B')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'janesmith@gmail.com')"
+
+        - insert:
+            tableName: project_collaborators
+            columns:
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project B')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kateboss@gmail.com')"
+
+        - insert:
+            tableName: project_collaborators
+            columns:
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project B')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kendave@gmail.com')"
+
+        - insert:
+            tableName: project_collaborators
+            columns:
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project C')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'innadobra@gmail.com')"
+
+        - insert:
+            tableName: project_collaborators
+            columns:
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project C')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kendave@gmail.com')"
+
+        - insert:
+            tableName: project_collaborators
+            columns:
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project D')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'janesmith@gmail.com')"
+
+        - insert:
+            tableName: project_collaborators
+            columns:
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project D')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kateboss@gmail.com')"
