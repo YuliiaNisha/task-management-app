@@ -18,6 +18,7 @@ import com.julia.taskmanagementapp.exception.UploadDropBoxException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,14 +28,12 @@ public class DropBoxServiceImpl implements DropBoxService {
     private static final int CHUNKED_UPLOAD_MAX_ATTEMPTS = 5;
     private static final String CLIENT_IDENTIFIER = "task_management_application";
     private final DbxClientV2 dbxClient;
-    private final String appKey;
-    private final String appSecret;
-    private final String refreshToken;
 
-    public DropBoxServiceImpl() {
-        this.appKey = System.getenv("DROPBOX_APP_KEY");
-        this.appSecret = System.getenv("DROPBOX_APP_SECRET");
-        this.refreshToken = System.getenv("DROPBOX_REFRESH_TOKEN");
+    public DropBoxServiceImpl(
+            @Value("${dropbox.appKey}") String appKey,
+                    @Value("${dropbox.appSecret}") String appSecret,
+                    @Value("${dropbox.refreshToken}") String refreshToken
+    ) {
         if (appKey == null || appSecret == null || refreshToken == null) {
             throw new DropBoxConfigurationException(
                     "Dropbox credentials are missing. Please ensure DROPBOX_APP_KEY, "
