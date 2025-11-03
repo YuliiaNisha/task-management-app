@@ -9,4 +9,6 @@ public interface AttachmentService {
     List<AttachmentDto> addAttachmentToTask(Long taskId, List<MultipartFile> files, Long userId);
 
     void downloadAttachments(Long taskId, HttpServletResponse response, Long userId);
+
+    void deleteAttachment(String dropboxFileId, Long userId);
 }

@@ -12,6 +12,7 @@ import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.UploadSessionCursor;
 import com.dropbox.core.v2.files.UploadSessionFinishErrorException;
 import com.dropbox.core.v2.files.WriteMode;
+import com.julia.taskmanagementapp.exception.DeleteDropBoxException;
 import com.julia.taskmanagementapp.exception.DownloadDropBoxException;
 import com.julia.taskmanagementapp.exception.UploadDropBoxException;
 import jakarta.annotation.PostConstruct;
@@ -48,19 +49,6 @@ public class DropBoxServiceImpl implements DropBoxService {
         DbxRequestConfig config = DbxRequestConfig.newBuilder(CLIENT_IDENTIFIER).build();
         this.dbxClient = new DbxClientV2(config, credential);
     }
-
-//    public DropBoxServiceImpl() {
-//        DbxCredential credential = new DbxCredential(
-//                "",
-//                0L,
-//                refreshToken,
-//                appKey,
-//                appSecret
-//        );
-//
-//        DbxRequestConfig config = DbxRequestConfig.newBuilder(CLIENT_IDENTIFIER).build();
-//        this.dbxClient = new DbxClientV2(config, credential);
-//    }
 
     @Override
     public FileMetadata upload(MultipartFile file, String dropboxPath) {
@@ -99,6 +87,17 @@ public class DropBoxServiceImpl implements DropBoxService {
         } catch (DbxException | IOException ex) {
             throw new DownloadDropBoxException("Error downloading files from Dropbox: "
                     + ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public void deleteFile(String dropboxFileId) {
+        try {
+            dbxClient.files().deleteV2(dropboxFileId);
+        } catch (DbxException e) {
+            throw new DeleteDropBoxException(
+                    "Failed to delete file from Dropbox", e
+            );
         }
     }
 

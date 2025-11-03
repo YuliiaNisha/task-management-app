@@ -8,11 +8,14 @@ import com.julia.taskmanagementapp.service.project.ProjectPermissionService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,5 +43,14 @@ public class AttachmentController {
             @AuthenticationPrincipal User user
     ) {
         attachmentService.downloadAttachments(taskId, response, user.getId());
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping
+    public void deleteAttachment(
+            @RequestParam ("dropboxFileId") String dropboxFileId,
+            @AuthenticationPrincipal User user
+    ) {
+        attachmentService.deleteAttachment(dropboxFileId, user.getId());
     }
 }
