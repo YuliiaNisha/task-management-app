@@ -13,7 +13,6 @@ import com.dropbox.core.v2.files.UploadSessionCursor;
 import com.dropbox.core.v2.files.UploadSessionFinishErrorException;
 import com.dropbox.core.v2.files.WriteMode;
 import com.julia.taskmanagementapp.exception.DownloadDropBoxException;
-import com.julia.taskmanagementapp.exception.DropBoxConfigurationException;
 import com.julia.taskmanagementapp.exception.UploadDropBoxException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,19 +27,14 @@ public class DropBoxServiceImpl implements DropBoxService {
     private static final int CHUNKED_UPLOAD_MAX_ATTEMPTS = 5;
     private static final String CLIENT_IDENTIFIER = "task_management_application";
     private final DbxClientV2 dbxClient;
+    @Value("${dropbox.appKey:dummy-key}")
+    private String appKey;
+    @Value("${dropbox.appSecret:dummy-secret}")
+    private String appSecret;
+    @Value("${dropbox.refreshToken:dummy-token}")
+    private String refreshToken;
 
-    public DropBoxServiceImpl(
-            @Value("${dropbox.appKey}") String appKey,
-                    @Value("${dropbox.appSecret}") String appSecret,
-                    @Value("${dropbox.refreshToken}") String refreshToken
-    ) {
-        if (appKey == null || appSecret == null || refreshToken == null) {
-            throw new DropBoxConfigurationException(
-                    "Dropbox credentials are missing. Please ensure DROPBOX_APP_KEY, "
-                            + "DROPBOX_APP_SECRET, and DROPBOX_REFRESH_TOKEN are provided."
-            );
-        }
-
+    public DropBoxServiceImpl() {
         DbxCredential credential = new DbxCredential(
                 "",
                 0L,
