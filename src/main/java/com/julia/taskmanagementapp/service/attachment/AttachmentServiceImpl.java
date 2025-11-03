@@ -3,6 +3,7 @@ package com.julia.taskmanagementapp.service.attachment;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.julia.taskmanagementapp.dropbox.DropBoxService;
 import com.julia.taskmanagementapp.dto.attachment.AttachmentDto;
+import com.julia.taskmanagementapp.exception.DatabaseOperationException;
 import com.julia.taskmanagementapp.exception.DownloadDropBoxException;
 import com.julia.taskmanagementapp.exception.EntityNotFoundException;
 import com.julia.taskmanagementapp.exception.UploadDropBoxException;
@@ -91,6 +92,29 @@ public class AttachmentServiceImpl implements AttachmentService {
             outputStream.flush();
         } catch (IOException e) {
             throw new DownloadDropBoxException("Failed to download attachments from Dropbox", e);
+        }
+    }
+
+    @Override
+    public void deleteAttachment(String dropboxFileId, Long userId) {
+        Attachment attachment = attachmentRepository.findByDropboxFileId(dropboxFileId).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "There is no attachment by dropboxFileId: " + dropboxFileId
+                )
+        );
+        checkUserHasPermissionToModifyTask(attachment.getTaskId(), userId);
+
+        dropBoxService.deleteFile(attachment.getDropboxFileId());
+        deleteAttachmentFromDb(dropboxFileId, attachment);
+    }
+
+    private void deleteAttachmentFromDb(String dropboxFileId, Attachment attachment) {
+        try {
+            attachmentRepository.delete(attachment);
+        } catch (Exception e) {
+            throw new DatabaseOperationException("Failed to delete attachment from database "
+                    + "after deleting file from DropBox. "
+                    + "DropboxFileId: " + dropboxFileId, e);
         }
     }
 

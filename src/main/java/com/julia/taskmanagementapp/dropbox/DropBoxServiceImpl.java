@@ -12,8 +12,10 @@ import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.UploadSessionCursor;
 import com.dropbox.core.v2.files.UploadSessionFinishErrorException;
 import com.dropbox.core.v2.files.WriteMode;
+import com.julia.taskmanagementapp.exception.DeleteDropBoxException;
 import com.julia.taskmanagementapp.exception.DownloadDropBoxException;
 import com.julia.taskmanagementapp.exception.UploadDropBoxException;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,7 +28,7 @@ public class DropBoxServiceImpl implements DropBoxService {
     private static final long CHUNKED_UPLOAD_CHUNK_SIZE = 8L << 20;
     private static final int CHUNKED_UPLOAD_MAX_ATTEMPTS = 5;
     private static final String CLIENT_IDENTIFIER = "task_management_application";
-    private final DbxClientV2 dbxClient;
+    private DbxClientV2 dbxClient;
     @Value("${dropbox.appKey:dummy-key}")
     private String appKey;
     @Value("${dropbox.appSecret:dummy-secret}")
@@ -34,7 +36,8 @@ public class DropBoxServiceImpl implements DropBoxService {
     @Value("${dropbox.refreshToken:dummy-token}")
     private String refreshToken;
 
-    public DropBoxServiceImpl() {
+    @PostConstruct
+    public void init() {
         DbxCredential credential = new DbxCredential(
                 "",
                 0L,
@@ -84,6 +87,17 @@ public class DropBoxServiceImpl implements DropBoxService {
         } catch (DbxException | IOException ex) {
             throw new DownloadDropBoxException("Error downloading files from Dropbox: "
                     + ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public void deleteFile(String dropboxFileId) {
+        try {
+            dbxClient.files().deleteV2(dropboxFileId);
+        } catch (DbxException e) {
+            throw new DeleteDropBoxException(
+                    "Failed to delete file from Dropbox", e
+            );
         }
     }
 

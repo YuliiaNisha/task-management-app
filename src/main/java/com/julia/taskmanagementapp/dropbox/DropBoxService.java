@@ -10,4 +10,6 @@ public interface DropBoxService {
     void downloadSingleFile(String dropboxFileId, OutputStream out);
 
     void downloadFilesAsZip(String dropboxFolderPath, OutputStream out);
+
+    void deleteFile(String dropboxFileId);
 }

@@ -9,4 +9,6 @@ public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
     List<Attachment> findAllByTaskId(Long taskId);
 
     Optional<Attachment> findByTaskIdAndDropboxFileId(Long taskId, String dropboxFileId);
+
+    Optional<Attachment> findByDropboxFileId(String dropboxFileId);
 }
