@@ -1,5 +1,6 @@
 package com.julia.taskmanagementapp.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,8 +18,12 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private Long taskId;
+    @Column(nullable = false)
     private Long userId;
+    @Column(nullable = false)
     private String text;
+    @Column(nullable = false)
     private LocalDateTime timestamp;
 }
