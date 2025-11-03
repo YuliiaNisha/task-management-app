@@ -112,6 +112,36 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         );
     }
 
+    @ExceptionHandler(DownloadDropBoxException.class)
+    protected ResponseEntity<Object> handleDownloadDropBoxException(
+            DownloadDropBoxException ex
+    ) {
+        return new ResponseEntity<>(
+                getBody(List.of(ex.getMessage())),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(UploadDropBoxException.class)
+    protected ResponseEntity<Object> handleUploadDropBoxException(
+            UploadDropBoxException ex
+    ) {
+        return new ResponseEntity<>(
+                getBody(List.of(ex.getMessage())),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(DropBoxConfigurationException.class)
+    protected ResponseEntity<Object> handleDropBoxConfigurationException(
+            DropBoxConfigurationException ex
+    ) {
+        return new ResponseEntity<>(
+                getBody(List.of(ex.getMessage())),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
     private String getErrorMessage(ObjectError error) {
         if (error instanceof FieldError fieldError) {
             return fieldError.getField() + ": " + error.getDefaultMessage();
