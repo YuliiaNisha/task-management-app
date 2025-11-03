@@ -14,6 +14,7 @@ import com.dropbox.core.v2.files.UploadSessionFinishErrorException;
 import com.dropbox.core.v2.files.WriteMode;
 import com.julia.taskmanagementapp.exception.DownloadDropBoxException;
 import com.julia.taskmanagementapp.exception.UploadDropBoxException;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,7 +27,7 @@ public class DropBoxServiceImpl implements DropBoxService {
     private static final long CHUNKED_UPLOAD_CHUNK_SIZE = 8L << 20;
     private static final int CHUNKED_UPLOAD_MAX_ATTEMPTS = 5;
     private static final String CLIENT_IDENTIFIER = "task_management_application";
-    private final DbxClientV2 dbxClient;
+    private DbxClientV2 dbxClient;
     @Value("${dropbox.appKey:dummy-key}")
     private String appKey;
     @Value("${dropbox.appSecret:dummy-secret}")
@@ -34,7 +35,8 @@ public class DropBoxServiceImpl implements DropBoxService {
     @Value("${dropbox.refreshToken:dummy-token}")
     private String refreshToken;
 
-    public DropBoxServiceImpl() {
+    @PostConstruct
+    public void init() {
         DbxCredential credential = new DbxCredential(
                 "",
                 0L,
@@ -46,6 +48,19 @@ public class DropBoxServiceImpl implements DropBoxService {
         DbxRequestConfig config = DbxRequestConfig.newBuilder(CLIENT_IDENTIFIER).build();
         this.dbxClient = new DbxClientV2(config, credential);
     }
+
+//    public DropBoxServiceImpl() {
+//        DbxCredential credential = new DbxCredential(
+//                "",
+//                0L,
+//                refreshToken,
+//                appKey,
+//                appSecret
+//        );
+//
+//        DbxRequestConfig config = DbxRequestConfig.newBuilder(CLIENT_IDENTIFIER).build();
+//        this.dbxClient = new DbxClientV2(config, credential);
+//    }
 
     @Override
     public FileMetadata upload(MultipartFile file, String dropboxPath) {
