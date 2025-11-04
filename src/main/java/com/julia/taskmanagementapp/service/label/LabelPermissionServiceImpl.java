@@ -33,6 +33,4 @@ public class LabelPermissionServiceImpl implements LabelPermissionService {
         }
         return labelOptional.get();
     }
-
-
 }

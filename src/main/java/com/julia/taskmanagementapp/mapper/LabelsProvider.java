@@ -3,7 +3,6 @@ package com.julia.taskmanagementapp.mapper;
 import com.julia.taskmanagementapp.model.Label;
 import com.julia.taskmanagementapp.repository.LabelRepository;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
