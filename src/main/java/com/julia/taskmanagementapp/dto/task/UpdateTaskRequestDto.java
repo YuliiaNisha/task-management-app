@@ -5,6 +5,7 @@ import com.julia.taskmanagementapp.validation.ValidEnumFieldValue;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Set;
 
 public record UpdateTaskRequestDto(
          String name,
@@ -25,6 +26,8 @@ public record UpdateTaskRequestDto(
          @FutureOrPresent(message = "Due date cannot be in the past")
          LocalDate dueDate,
          Long projectId,
-         Long assigneeId
+         Long assigneeId,
+
+         Set<Long> labelIds
 ) {
 }

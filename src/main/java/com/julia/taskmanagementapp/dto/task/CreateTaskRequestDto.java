@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Set;
 
 @ValidEnumFieldValue(
         fieldToValidate = "priority",
@@ -27,6 +28,7 @@ public record CreateTaskRequestDto(
         @NotNull(message = "Project id is required")
         Long projectId,
         @NotNull(message = "Assignee id is required")
-        Long assigneeId
+        Long assigneeId,
+        Set<Long> labelIds
 ) {
 }

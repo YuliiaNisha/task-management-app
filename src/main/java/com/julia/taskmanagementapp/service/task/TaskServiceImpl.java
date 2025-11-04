@@ -11,6 +11,7 @@ import com.julia.taskmanagementapp.model.Label;
 import com.julia.taskmanagementapp.model.Task;
 import com.julia.taskmanagementapp.repository.LabelRepository;
 import com.julia.taskmanagementapp.repository.TaskRepository;
+import com.julia.taskmanagementapp.service.label.LabelPermissionService;
 import com.julia.taskmanagementapp.service.project.ProjectPermissionService;
 import jakarta.transaction.Transactional;
 import java.util.Set;
@@ -26,6 +27,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final LabelRepository labelRepository;
     private final ProjectPermissionService projectPermissionService;
+    private final LabelPermissionService labelPermissionService;
 
     @Override
     public TaskDto create(CreateTaskRequestDto requestDto, Long userId) {
@@ -35,6 +37,12 @@ public class TaskServiceImpl implements TaskService {
         projectPermissionService.checkProjectIfCollaborator(
                 requestDto.projectId(), requestDto.assigneeId()
         );
+
+        Set<Long> labelIds = requestDto.labelIds();
+        if (!labelIds.isEmpty()) {
+            labelPermissionService.checkLabelsIfCreator(labelIds, userId);
+        }
+
         Task task = taskMapper.toModel(requestDto);
         task.setStatus(Task.Status.NOT_STARTED);
         Task savedTask = taskRepository.save(task);
@@ -62,16 +70,22 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public TaskDto update(Long id, UpdateTaskRequestDto requestDto, Long userId) {
-        projectPermissionService.checkProjectIfCreator(id, userId);
         Task task = findTaskById(id);
+        projectPermissionService.checkProjectIfCreator(task.getProjectId(), userId);
+
+        Set<Long> labelIds = requestDto.labelIds();
+        if (!labelIds.isEmpty()) {
+            labelPermissionService.checkLabelsIfCreator(labelIds, userId);
+        }
+
         taskMapper.updateTask(task, requestDto);
         return taskMapper.toDto(taskRepository.save(task));
     }
 
     @Override
     public void delete(Long id, Long userId) {
-        projectPermissionService.checkProjectIfCreator(id, userId);
         Task task = findTaskById(id);
+        projectPermissionService.checkProjectIfCreator(task.getProjectId(), userId);
         taskRepository.delete(task);
     }
 
@@ -81,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = findTaskById(taskId);
         projectPermissionService.checkProjectIfCreator(task.getProjectId(), userId);
 
-        Label label = findLabelByIdAndCreator(labelId, userId);
+        Label label = labelPermissionService.findLabelIfCreator(labelId, userId);
 
         ensureTaskDoesNotHaveSuchLabel(task.getLabels(), label);
         task.getLabels().add(label);
