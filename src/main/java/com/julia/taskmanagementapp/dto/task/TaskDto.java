@@ -1,6 +1,7 @@
 package com.julia.taskmanagementapp.dto.task;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public record TaskDto(
         Long id,
@@ -10,6 +11,7 @@ public record TaskDto(
         String status,
         LocalDate dueDate,
         Long projectId,
-        Long assigneeId
+        Long assigneeId,
+        Set<Long> labelIds
 ) {
 }
