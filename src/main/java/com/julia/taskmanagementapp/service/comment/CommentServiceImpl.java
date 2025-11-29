@@ -2,15 +2,21 @@ package com.julia.taskmanagementapp.service.comment;
 
 import com.julia.taskmanagementapp.dto.comment.CommentDto;
 import com.julia.taskmanagementapp.dto.comment.CreateCommentRequestDto;
+import com.julia.taskmanagementapp.event.comment.factory.CommentEventFactory;
+import com.julia.taskmanagementapp.event.comment.factory.CommentEventType;
 import com.julia.taskmanagementapp.exception.EntityNotFoundException;
 import com.julia.taskmanagementapp.mapper.CommentMapper;
 import com.julia.taskmanagementapp.model.Comment;
+import com.julia.taskmanagementapp.model.Project;
 import com.julia.taskmanagementapp.model.Task;
+import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.repository.CommentRepository;
 import com.julia.taskmanagementapp.repository.TaskRepository;
+import com.julia.taskmanagementapp.repository.UserRepository;
 import com.julia.taskmanagementapp.service.project.ProjectPermissionService;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,18 +26,32 @@ import org.springframework.stereotype.Service;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
     private final CommentMapper commentMapper;
     private final ProjectPermissionService projectPermissionService;
+    private final ApplicationEventPublisher publisher;
+    private final CommentEventFactory commentEventFactory;
 
     @Override
-    public CommentDto create(CreateCommentRequestDto requestDto, Long userId) {
+    public CommentDto create(CreateCommentRequestDto requestDto, User user) {
         Task task = getTaskById(requestDto.taskId());
-        projectPermissionService.checkProjectIfCreatorOrCollaborator(
-                task.getProjectId(), userId);
+        Project project = projectPermissionService.getProjectByIdIfCreatorOrCollaborator(
+                task.getProjectId(), user.getId()
+        );
+
         Comment comment = commentMapper.toModel(requestDto);
-        comment.setUserId(userId);
+        comment.setUserId(user.getId());
         comment.setTimestamp(LocalDateTime.now());
         Comment savedComment = commentRepository.save(comment);
+
+        notifyUsers(
+                CommentEventType.COMMENT_CREATED,
+                project,
+                task,
+                savedComment,
+                user
+        );
+
         return commentMapper.toDto(savedComment);
     }
 
@@ -49,6 +69,35 @@ public class CommentServiceImpl implements CommentService {
         return taskRepository.findById(taskId).orElseThrow(
                 () -> new EntityNotFoundException(
                         "There is no task by id: " + taskId
+                )
+        );
+    }
+
+    private void notifyUsers(
+            CommentEventType type,
+            Project project,
+            Task task,
+            Comment comment,
+            User commentCreator
+    ) {
+        User assignee = getUser(task.getAssigneeId());
+
+        publisher.publishEvent(
+                    commentEventFactory.create(
+                            type,
+                            project,
+                            task,
+                            comment,
+                            commentCreator,
+                            assignee
+                    )
+        );
+    }
+
+    private User getUser(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "There is no user by id: " + id
                 )
         );
     }

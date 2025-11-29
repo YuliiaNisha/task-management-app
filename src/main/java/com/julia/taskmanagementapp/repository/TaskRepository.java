@@ -4,12 +4,18 @@ import com.julia.taskmanagementapp.model.Task;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TaskRepository extends JpaRepository<Task, Long> {
+public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {
     Page<Task> findByProjectId(Long projectId, Pageable pageable);
 
     List<Task> findByAssigneeId(Long userId);
+
+    @EntityGraph(attributePaths = "labels")
+    Page<Task> findAll(Specification<Task> specification, Pageable pageable);
 }

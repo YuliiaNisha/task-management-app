@@ -2,7 +2,7 @@ package com.julia.taskmanagementapp.dto.project;
 
 import com.julia.taskmanagementapp.model.Project;
 import com.julia.taskmanagementapp.validation.UserIdsExistInDb;
-import com.julia.taskmanagementapp.validation.ValidEnumFieldValue;
+import com.julia.taskmanagementapp.validation.enumfield.ValidEnumFieldValue;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;

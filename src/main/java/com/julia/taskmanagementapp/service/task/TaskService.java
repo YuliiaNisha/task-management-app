@@ -2,6 +2,7 @@ package com.julia.taskmanagementapp.service.task;
 
 import com.julia.taskmanagementapp.dto.task.CreateTaskRequestDto;
 import com.julia.taskmanagementapp.dto.task.TaskDto;
+import com.julia.taskmanagementapp.dto.task.TaskSearchParameters;
 import com.julia.taskmanagementapp.dto.task.UpdateTaskRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,6 @@ public interface TaskService {
     TaskDto assignLabelToTask(Long taskId, Long labelId, Long userId);
 
     TaskDto removeLabelFromTask(Long taskId, Long labelId, Long userId);
+
+    Page<TaskDto> search(TaskSearchParameters taskSearchParameters, Pageable pageable, Long userId);
 }

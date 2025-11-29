@@ -118,7 +118,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     ) {
         return new ResponseEntity<>(
                 getBody(List.of(ex.getMessage())),
-                HttpStatus.FORBIDDEN
+                HttpStatus.BAD_GATEWAY
         );
     }
 
@@ -128,7 +128,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     ) {
         return new ResponseEntity<>(
                 getBody(List.of(ex.getMessage())),
-                HttpStatus.FORBIDDEN
+                HttpStatus.BAD_GATEWAY
         );
     }
 
@@ -138,7 +138,27 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     ) {
         return new ResponseEntity<>(
                 getBody(List.of(ex.getMessage())),
-                HttpStatus.FORBIDDEN
+                HttpStatus.BAD_GATEWAY
+        );
+    }
+
+    @ExceptionHandler(NotificationException.class)
+    protected ResponseEntity<Object> handleNotificationException(
+            NotificationException ex
+    ) {
+        return new ResponseEntity<>(
+                getBody(List.of(ex.getMessage())),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
+    @ExceptionHandler(SpecificationProviderNotFoundException.class)
+    protected ResponseEntity<Object> handleSpecificationProviderNotFoundException(
+            SpecificationProviderNotFoundException ex
+    ) {
+        return new ResponseEntity<>(
+                getBody(List.of(ex.getMessage())),
+                HttpStatus.BAD_REQUEST
         );
     }
 

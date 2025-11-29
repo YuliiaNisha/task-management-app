@@ -4,12 +4,15 @@ import com.julia.taskmanagementapp.model.Project;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ProjectRepository extends JpaRepository<Project, Long> {
+public interface ProjectRepository
+        extends JpaRepository<Project, Long>, JpaSpecificationExecutor<Project> {
     @Query("SELECT DISTINCT p FROM Project p "
             + "LEFT JOIN p.collaborators c "
             + "WHERE p.creator.id = :userId OR c.id = :userId")
@@ -27,7 +30,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @EntityGraph(attributePaths = {"creator", "collaborators"})
     @Query("SELECT p FROM Project p "
-            + "WHERE p.id = :projectId AND p.creator.id = :userId")
+            + "WHERE p.id = :projectId "
+            + "AND (p.creator.id = :userId "
+            + "OR EXISTS (SELECT c FROM p.collaborators c WHERE c.id = :userId))")
     Optional<Project> findByIdAndCreatorAndCollaborators(
             @Param("projectId") Long id, @Param("userId") Long userId
     );
@@ -58,4 +63,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     boolean existsByIdAndCollaborator(
             @Param("projectId") Long id, @Param("collaboratorId") Long collaboratorId
     );
+
+    @EntityGraph(attributePaths = "collaborators")
+    Page<Project> findAll(Specification<Project> specification, Pageable pageable);
 }

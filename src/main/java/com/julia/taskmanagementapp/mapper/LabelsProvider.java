@@ -16,7 +16,10 @@ public class LabelsProvider {
 
     @Named("getLabelsFromIds")
     public Set<Label> getLabelsFromIds(Set<Long> labelIds) {
-        return new HashSet<>(labelRepository.findAllById(labelIds));
+        if (labelIds != null) {
+            return new HashSet<>(labelRepository.findAllById(labelIds));
+        }
+        return new HashSet<>();
     }
 
     @Named("getIdsFromLabels")
