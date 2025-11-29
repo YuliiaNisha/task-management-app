@@ -1,7 +1,7 @@
 package com.julia.taskmanagementapp.dto.task;
 
 import com.julia.taskmanagementapp.model.Task;
-import com.julia.taskmanagementapp.validation.ValidEnumFieldValue;
+import com.julia.taskmanagementapp.validation.enumfield.ValidEnumFieldValue;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

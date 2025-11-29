@@ -1,4 +1,4 @@
-package com.julia.taskmanagementapp.validation;
+package com.julia.taskmanagementapp.validation.enumfield;
 
 import com.julia.taskmanagementapp.exception.EnumFieldValidatorException;
 import jakarta.validation.ConstraintValidator;

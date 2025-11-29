@@ -73,4 +73,18 @@ public class Project {
         IN_PROGRESS,
         COMPLETED
     }
+
+    @Getter
+    public enum SpecificationKey {
+        NAME("name"),
+        STATUS("status"),
+        END_DATE("endDate"),
+        CREATOR_COLLABORATOR("creatorCollaborator");
+
+        private final String value;
+
+        SpecificationKey(String value) {
+            this.value = value;
+        }
+    }
 }

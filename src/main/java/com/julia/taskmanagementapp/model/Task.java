@@ -76,4 +76,20 @@ public class Task {
         IN_PROGRESS,
         COMPLETED
     }
+
+    @Getter
+    public enum SpecificationKey {
+        STATUS("status"),
+        PRIORITY("priority"),
+        PROJECT_ID("projectId"),
+        NAME("name"),
+        ASSIGNEE_ID("assigneeId"),
+        DUE_DATE("dueDate");
+
+        private final String value;
+
+        SpecificationKey(String value) {
+            this.value = value;
+        }
+    }
 }
