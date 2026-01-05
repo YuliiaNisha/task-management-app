@@ -5,6 +5,7 @@ import com.julia.taskmanagementapp.dto.label.CreateLabelRequestDto;
 import com.julia.taskmanagementapp.dto.label.LabelDto;
 import com.julia.taskmanagementapp.dto.label.UpdateLabelRequestDto;
 import com.julia.taskmanagementapp.model.Label;
+import com.julia.taskmanagementapp.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -14,6 +15,7 @@ import org.mapstruct.Named;
 public interface LabelMapper {
     Label toModel(CreateLabelRequestDto requestDto);
 
+    @Mapping(source = "creator", target = "creatorId", qualifiedByName = "getCreatorId")
     LabelDto toDto(Label label);
 
     void update(@MappingTarget Label label, UpdateLabelRequestDto requestDto);
@@ -32,5 +34,10 @@ public interface LabelMapper {
             return string.trim();
         }
         return null;
+    }
+
+    @Named("getCreatorId")
+    default Long getCreatorId(User creator) {
+        return creator.getId();
     }
 }

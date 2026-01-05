@@ -7,6 +7,7 @@ import com.julia.taskmanagementapp.exception.EntityAlreadyExistsException;
 import com.julia.taskmanagementapp.exception.ForbiddenAccessException;
 import com.julia.taskmanagementapp.mapper.LabelMapper;
 import com.julia.taskmanagementapp.model.Label;
+import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,10 +21,11 @@ public class LabelServiceImpl implements LabelService {
     private final LabelMapper labelMapper;
 
     @Override
-    public LabelDto create(CreateLabelRequestDto requestDto, Long userId) {
+    public LabelDto create(CreateLabelRequestDto requestDto, User user) {
         CreateLabelRequestDto trimmedRequestDto = labelMapper.trimCreateRequest(requestDto);
-        checkValuesAlreadyExist(trimmedRequestDto.name(), trimmedRequestDto.color(), userId);
+        checkValuesAlreadyExist(trimmedRequestDto.name(), trimmedRequestDto.color(), user.getId());
         Label label = labelMapper.toModel(trimmedRequestDto);
+        label.setCreator(user);
         return labelMapper.toDto(labelRepository.save(label));
     }
 
