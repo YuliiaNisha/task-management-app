@@ -22,6 +22,9 @@ public class EnumFieldValidator implements ConstraintValidator<ValidEnumFieldVal
     @Override
     public boolean isValid(Object object, ConstraintValidatorContext context) {
         try {
+            if (object == null) {
+                return true;
+            }
             Field field = object.getClass().getDeclaredField(fieldToValidate);
             field.setAccessible(true);
             Object objectToValidate = field.get(object);

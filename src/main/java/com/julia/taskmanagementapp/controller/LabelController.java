@@ -57,7 +57,7 @@ public class LabelController {
             @RequestBody @Valid CreateLabelRequestDto requestDto,
             @AuthenticationPrincipal User user
     ) {
-        return labelService.create(requestDto, user.getId());
+        return labelService.create(requestDto, user);
     }
 
     @Operation(
