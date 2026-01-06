@@ -74,62 +74,73 @@ class TaskServiceImplTest {
     private TaskEventFactory taskEventFactory;
     @Mock
     private SpecificationBuilder<Task, TaskSearchParametersWithAssigneeId> specificationBuilder;
-    private Label label = new Label();
-    private TaskDto taskDto = new TaskDto(
-            TASK_ID, "task",
-            "description", Task.Priority.LOW.name(),
-            Task.Status.NOT_STARTED.name(), LocalDate.now(),
-            PROJECT_ID, ASSIGNEE_ID,
-            Set.of(LABEL_ID));
-    private CreateTaskRequestDto createTaskRequestDto = new CreateTaskRequestDto(
-            "Test task", "description", "HIGH",
-            LocalDate.of(2025, 12, 31),
-            1L, 1L, Set.of(1L)
-    );
-    private UpdateTaskRequestDto updateTaskRequestDto = new UpdateTaskRequestDto(
-            "Test task updated",
-            null, null, null, null,
-            null, null, null
-    );
-    private Task task = new Task();
-    private Task savedTask = new Task();
-    private User assignee = new User();
-    private Project project = new Project();
+    private Label label;
+    private Label labelSecond;
+    private TaskDto taskDto;
+    private CreateTaskRequestDto createTaskRequestDto;
+    private UpdateTaskRequestDto updateTaskRequestDto;
+    private Task task;
+    private Task savedTask;
+    private User assignee;
+    private Project project;
+    private Long userId = 1L;
 
     @BeforeEach
     void setUp() {
+        taskDto = new TaskDto(
+                TASK_ID, "task",
+                "description", Task.Priority.LOW.name(),
+                Task.Status.NOT_STARTED.name(), LocalDate.now(),
+                PROJECT_ID, ASSIGNEE_ID,
+                Set.of(LABEL_ID));
+
+        createTaskRequestDto = new CreateTaskRequestDto(
+                "Test task", "description", "HIGH",
+                LocalDate.of(2025, 12, 31),
+                1L, 1L, Set.of(1L)
+        );
+
+        updateTaskRequestDto = new UpdateTaskRequestDto(
+                "Test task updated",
+                null, null, null, null,
+                null, null, null
+        );
+
+        label = new Label();
+        label.setId(1L);
+
+        labelSecond = new Label();
+        labelSecond.setId(2L);
+
+        Set<Label> labels = new HashSet<>();
+        labels.add(label);
+
+        task = new Task();
         task.setAssigneeId(1L);
         task.setId(1L);
         task.setName("task");
         task.setDueDate(LocalDate.now());
         task.setProjectId(1L);
-        task.setLabels(new HashSet<>());
-        task.getLabels().add(label);
+        task.setLabels(labels);
 
+        savedTask = new Task();
         savedTask.setAssigneeId(1L);
         savedTask.setId(1L);
         savedTask.setName("task");
         savedTask.setDueDate(LocalDate.now());
         savedTask.setProjectId(1L);
 
+        assignee = new User();
         assignee.setEmail("email");
         assignee.setFirstName("First");
         assignee.setId(10L);
 
+        project = new Project();
         project.setName("project");
-
-        label.setId(1L);
     }
 
     @Test
     void create_validRequest_returnTaskDto() {
-        CreateTaskRequestDto requestDto = new CreateTaskRequestDto(
-                "name", "description",
-                Task.Priority.LOW.name(),
-                LocalDate.now(), 1L, 1L,
-                Set.of(1L)
-        );
-        Long userId = 1L;
         TaskCreatedEvent taskCreatedEvent = new TaskCreatedEvent(
                 assignee.getEmail(),
                 assignee.getFirstName(),
@@ -140,7 +151,7 @@ class TaskServiceImplTest {
         );
 
         when(projectPermissionService.getProjectByIdIfCreator(
-                requestDto.projectId(), userId
+                createTaskRequestDto.projectId(), userId
         )).thenReturn(project);
         doNothing().when(projectPermissionService)
                 .checkProjectIfCollaborator(PROJECT_ID, USER_ID);
@@ -162,7 +173,6 @@ class TaskServiceImplTest {
     @Test
     void getTasksForProject_validRequest_returnsPageTaskDto() {
         Long projectId = 1L;
-        Long userId = 1L;
         Page<Task> tasks = new PageImpl<>(List.of(task));
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -184,8 +194,6 @@ class TaskServiceImplTest {
 
     @Test
     void getTaskById_validId_returnTaskDto() {
-        Long userId = 1L;
-
         when(taskRepository.findById(1L))
                 .thenReturn(Optional.of(task));
         doNothing().when(projectPermissionService)
@@ -208,7 +216,6 @@ class TaskServiceImplTest {
 
     @Test
     void update_validRequest_returnTaskDto() {
-        Long userId = 1L;
         TaskUpdatedEvent taskUpdatedEvent = new TaskUpdatedEvent(
                 assignee.getEmail(),
                 assignee.getFirstName(),
@@ -244,16 +251,19 @@ class TaskServiceImplTest {
                 savedTask.getName(),
                 project.getName()
         );
-        when(taskRepository.findById(1L))
+        when(taskRepository.findById(task.getId()))
                 .thenReturn(Optional.of(task));
         when(projectPermissionService.getProjectByIdIfCreator(
-                task.getProjectId(), 1L)).thenReturn(project);
+                task.getProjectId(), 1L))
+                .thenReturn(project);
         doNothing().when(taskRepository).delete(task);
         when(taskEventFactory.create(
-                TaskEventType.TASK_DELETED, project, savedTask
+                TaskEventType.TASK_DELETED, project, task
         )).thenReturn(taskDeletedEvent);
 
-        assertDoesNotThrow(() -> taskService.delete(1L, 1L));
+        assertDoesNotThrow(() -> taskService.delete(
+                task.getId(), 1L
+        ));
         verify(publisher).publishEvent(taskDeletedEvent);
     }
 
@@ -272,14 +282,14 @@ class TaskServiceImplTest {
         when(projectPermissionService.getProjectByIdIfCreator(
                 task.getProjectId(), 1L)).thenReturn(project);
         when(labelPermissionService.findLabelIfCreator(
-                1L, 1L)).thenReturn(label);
+                2L, 1L)).thenReturn(labelSecond);
         when(taskRepository.save(task)).thenReturn(savedTask);
         when(taskEventFactory.create(
                 TaskEventType.LABEL_ASSIGNED_TO_TASK, project, savedTask
         )).thenReturn(labelAssignedToTaskEvent);
         when(taskMapper.toDto(savedTask)).thenReturn(taskDto);
 
-        TaskDto actual = taskService.assignLabelToTask(1L, 1L, 1L);
+        TaskDto actual = taskService.assignLabelToTask(1L, 2L, 1L);
 
         assertEquals(taskDto, actual);
 

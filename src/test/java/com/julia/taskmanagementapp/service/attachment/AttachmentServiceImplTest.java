@@ -36,7 +36,6 @@ import org.springframework.web.multipart.MultipartFile;
 @ExtendWith(MockitoExtension.class)
 class AttachmentServiceImplTest {
     public static final long TASK_ID = 1L;
-    public static final long PROJECT_ID = 1L;
     public static final long USER_ID = 1L;
     @Mock
     private DropBoxService dropBoxService;
@@ -87,7 +86,7 @@ class AttachmentServiceImplTest {
         when(taskRepository.findById(task.getId()))
                 .thenReturn(Optional.of(task));
         doNothing().when(projectPermissionService).checkProjectIfCreatorOrCollaborator(
-                PROJECT_ID, USER_ID
+                task.getProjectId(), USER_ID
         );
         when(dropBoxService.upload(file, "/users/1/tasks/1/file.txt"))
                 .thenReturn(metadata);
@@ -196,9 +195,6 @@ class AttachmentServiceImplTest {
 
         attachment.setDropboxFileId(fileId);
         attachment.setTaskId(task.getId());
-
-        Task task = new Task();
-        task.setProjectId(task.getProjectId());
 
         when(attachmentRepository.findByDropboxFileId(fileId))
                 .thenReturn(Optional.of(attachment));

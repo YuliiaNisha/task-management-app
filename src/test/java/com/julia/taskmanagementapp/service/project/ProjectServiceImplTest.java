@@ -157,7 +157,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void create_validCreatorCollabEqual_throwsException() {
+    void create_creatorCollabEqual_throwsException() {
         ProjectCreatedEvent projectCreatedEvent = new ProjectCreatedEvent(
                 Map.of("email", "First"),
                 project.getName(),
@@ -200,6 +200,10 @@ class ProjectServiceImplTest {
 
         ProjectDto actual = projectService.getProjectById(1L, userId);
         assertEquals(projectDto, actual);
+
+        verify(projectPermissionService).getProjectByIdIfCreatorOrCollaborator(
+                1L, userId
+        );
     }
 
     @Test
@@ -231,6 +235,8 @@ class ProjectServiceImplTest {
         ProjectDto actual = projectService.update(1L, updateRequestDto, userId);
 
         assertEquals(projectDto, actual);
+
+        verify(publisher).publishEvent(projectUpdatedEvent);
     }
 
     @Test
@@ -255,6 +261,8 @@ class ProjectServiceImplTest {
         assertDoesNotThrow(
                 () -> projectService.delete(1L, userId)
         );
+
+        verify(publisher).publishEvent(projectDeletedEvent);
     }
 
     @Test

@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,34 +53,53 @@ class CommentServiceImplTest {
     private CommentEventFactory commentEventFactory;
     @InjectMocks
     private CommentServiceImpl commentService;
+    private Task task;
+    private User user;
+    private User assignee;
+    private User projectCreator;
+    private User commentCreator;
+    private Project project;
+    private Comment comment;
+    private Comment savedComment;
+    private CommentCreatedEvent commentCreatedEvent;
+    private CreateCommentRequestDto createCommentRequestDto;
+    private Page<Comment> page;
+    private CommentDto commentDto;
 
-    @Test
-    void create_validRequest_returnsCommentDto() {
-        Task task = new Task();
+    @BeforeEach
+    void setUp() {
+        task = new Task();
         task.setId(1L);
         task.setProjectId(1L);
         task.setAssigneeId(2L);
         task.setName("name");
-        User user = new User();
+
+        user = new User();
         user.setId(1L);
-        User assignee = new User();
+
+        assignee = new User();
         assignee.setEmail("assigneeEmail");
-        User projectCreator = new User();
+
+        projectCreator = new User();
         projectCreator.setEmail("projectCreatorEmail");
-        User commentCreator = new User();
+
+        commentCreator = new User();
         commentCreator.setEmail("commentCreatorEmail");
         commentCreator.setFirstName("First");
         commentCreator.setLastName("Last");
-        Project project = new Project();
+
+        project = new Project();
         project.setCreator(projectCreator);
         project.setName("name");
 
-        Comment comment = new Comment();
+        comment = new Comment();
         comment.setId(100L);
-        Comment savedComment = new Comment();
+
+        savedComment = new Comment();
         savedComment.setId(100L);
         savedComment.setText("text");
-        CommentCreatedEvent commentCreatedEvent = new CommentCreatedEvent(
+
+        commentCreatedEvent = new CommentCreatedEvent(
                 Map.of("commentCreatorEmail", "First"),
                 comment.getId().toString(),
                 comment.getText(),
@@ -88,9 +108,18 @@ class CommentServiceImplTest {
                 "First Last"
         );
 
-        CreateCommentRequestDto createCommentRequestDto =
+        createCommentRequestDto =
                 new CreateCommentRequestDto(1L, "text");
 
+        commentDto = new CommentDto(
+                1L, 1L, 1L,
+                "text", LocalDateTime.now());
+
+        page = new PageImpl<>(List.of(comment));
+    }
+
+    @Test
+    void create_validRequest_returnsCommentDto() {
         when(taskRepository.findById(createCommentRequestDto.taskId()))
                 .thenReturn(Optional.of(task));
         when(projectPermissionService.getProjectByIdIfCreatorOrCollaborator(
@@ -109,9 +138,6 @@ class CommentServiceImplTest {
                 user,
                 assignee
         )).thenReturn(commentCreatedEvent);
-        CommentDto commentDto = new CommentDto(
-                1L, 1L, 1L,
-                "text", LocalDateTime.now());
         when(commentMapper.toDto(savedComment)).thenReturn(commentDto);
 
         CommentDto actual = commentService.create(createCommentRequestDto, user);
@@ -119,23 +145,14 @@ class CommentServiceImplTest {
         assertNotNull(actual);
         assertEquals(commentDto.id(), actual.id());
 
+        verify(projectPermissionService).getProjectByIdIfCreatorOrCollaborator(
+                task.getProjectId(), user.getId());
         verify(commentRepository).save(comment);
         verify(publisher).publishEvent(commentCreatedEvent);
     }
 
     @Test
     void getCommentsByTaskId_validId_returnsPageCommentDto() {
-
-        Task task = new Task();
-        task.setId(1L);
-        task.setProjectId(1L);
-        Comment comment = new Comment();
-        Page<Comment> page = new PageImpl<>(List.of(comment));
-        CommentDto commentDto = new CommentDto(
-                1L, 1L, 1L,
-                "comment", LocalDateTime.now()
-        );
-
         when(taskRepository.findById(1L))
                 .thenReturn(Optional.of(task));
         doNothing().when(projectPermissionService).checkProjectIfCreatorOrCollaborator(
@@ -152,5 +169,8 @@ class CommentServiceImplTest {
 
         assertNotNull(actual);
         assertEquals(1, actual.getContent().size());
+
+        verify(projectPermissionService).checkProjectIfCreatorOrCollaborator(
+                task.getProjectId(), 1L);
     }
 }

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.julia.taskmanagementapp.dto.label.CreateLabelRequestDto;
@@ -12,6 +13,7 @@ import com.julia.taskmanagementapp.dto.label.UpdateLabelRequestDto;
 import com.julia.taskmanagementapp.exception.EntityAlreadyExistsException;
 import com.julia.taskmanagementapp.mapper.LabelMapper;
 import com.julia.taskmanagementapp.model.Label;
+import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.repository.LabelRepository;
 import java.util.List;
 import java.util.Optional;
@@ -40,12 +42,16 @@ class LabelServiceImplTest {
     private CreateLabelRequestDto createLabelRequestDto;
     private CreateLabelRequestDto createLabelDtoTrimmed;
     private Long userId = 1L;
+    private User user;
     private Pageable pageable;
     private UpdateLabelRequestDto updateRequestDto;
     private UpdateLabelRequestDto trimmedUpdateRequestDto;
 
     @BeforeEach
     void setUp() {
+        user = new User();
+        user.setId(1L);
+
         label = new Label();
 
         savedLabel = new Label();
@@ -67,41 +73,52 @@ class LabelServiceImplTest {
         );
     }
 
-//    @Test
-//    void create_validRequest_returnsLabelDto() {
-//        when(labelMapper.trimCreateRequest(createLabelRequestDto))
-//                .thenReturn(createLabelDtoTrimmed);
-//        when(labelRepository.existsByNameIgnoreCaseAndCreatorId(
-//                createLabelDtoTrimmed.name(), userId
-//        )).thenReturn(false);
-//        when(labelRepository.existsByColorIgnoreCaseAndCreatorId(
-//                createLabelDtoTrimmed.color(), userId
-//        )).thenReturn(false);
-//        when(labelMapper.toModel(createLabelDtoTrimmed))
-//                .thenReturn(label);
-//        when(labelRepository.save(label))
-//                .thenReturn(savedLabel);
-//        when(labelMapper.toDto(savedLabel))
-//                .thenReturn(labelDto);
-//
-//        LabelDto actual = labelService.create(createLabelRequestDto, 1L);
-//
-//        assertEquals(labelDto, actual);
-//    }
+    @Test
+    void create_validRequest_returnsLabelDto() {
+        when(labelMapper.trimCreateRequest(createLabelRequestDto))
+                .thenReturn(createLabelDtoTrimmed);
+        when(labelRepository.existsByNameIgnoreCaseAndCreatorId(
+                createLabelDtoTrimmed.name(), userId
+        )).thenReturn(false);
+        when(labelRepository.existsByColorIgnoreCaseAndCreatorId(
+                createLabelDtoTrimmed.color(), userId
+        )).thenReturn(false);
+        when(labelMapper.toModel(createLabelDtoTrimmed))
+                .thenReturn(label);
+        when(labelRepository.save(label))
+                .thenReturn(savedLabel);
+        when(labelMapper.toDto(savedLabel))
+                .thenReturn(labelDto);
 
-//    @Test
-//    void create_labelNameAlreadyExists_throwsException() {
-//        when(labelMapper.trimCreateRequest(createLabelRequestDto))
-//                .thenReturn(createLabelDtoTrimmed);
-//        when(labelRepository.existsByNameIgnoreCaseAndCreatorId(
-//                createLabelDtoTrimmed.name(), userId
-//        )).thenReturn(true);
-//
-//        assertThrows(EntityAlreadyExistsException.class,
-//                () -> labelService.create(
-//                        createLabelRequestDto, user
-//                ));
-//    }
+        LabelDto actual = labelService.create(createLabelRequestDto, user);
+
+        assertEquals(labelDto, actual);
+
+        verify(labelRepository).existsByNameIgnoreCaseAndCreatorId(
+                createLabelDtoTrimmed.name(), userId
+        );
+        verify(labelRepository).existsByColorIgnoreCaseAndCreatorId(
+                createLabelDtoTrimmed.color(), userId
+        );
+    }
+
+    @Test
+    void create_labelNameAlreadyExists_throwsException() {
+        when(labelMapper.trimCreateRequest(createLabelRequestDto))
+                .thenReturn(createLabelDtoTrimmed);
+        when(labelRepository.existsByNameIgnoreCaseAndCreatorId(
+                createLabelDtoTrimmed.name(), userId
+        )).thenReturn(true);
+
+        assertThrows(EntityAlreadyExistsException.class,
+                () -> labelService.create(
+                        createLabelRequestDto, user
+                ));
+
+        verify(labelRepository).existsByNameIgnoreCaseAndCreatorId(
+                createLabelDtoTrimmed.name(), userId
+        );
+    }
 
     @Test
     void getLabels_validRequest_returnsPageDtos() {
@@ -137,6 +154,12 @@ class LabelServiceImplTest {
         LabelDto actual = labelService.update(1L, updateRequestDto, userId);
 
         assertEquals(labelDto, actual);
+
+        verify(labelRepository).findByIdAndCreatorId(1L, userId);
+        verify(labelRepository).existsByNameIgnoreCaseAndCreatorId(
+                trimmedUpdateRequestDto.name(), userId);
+        verify(labelRepository).existsByColorIgnoreCaseAndCreatorId(
+                trimmedUpdateRequestDto.color(), userId);
     }
 
     @Test
@@ -148,5 +171,7 @@ class LabelServiceImplTest {
         assertDoesNotThrow(() -> labelService.delete(
                 1L, userId
         ));
+
+        verify(labelRepository).findByIdAndCreatorId(1L, userId);
     }
 }
