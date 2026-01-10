@@ -93,8 +93,6 @@ class UserServiceImplTest {
         when(userMapper.toModel(requestDto)).thenReturn(user);
         when(passwordEncoder.encode(requestDto.password()))
                 .thenReturn("hfdhsuj");
-        when(roleRepository.findByRole(Role.RoleName.ROLE_USER))
-                .thenReturn(Optional.of(new Role()));
         when(userRepository.save(user))
                 .thenReturn(savedUser);
         when(userMapper.toDto(savedUser)).thenReturn(userResponseDto);
