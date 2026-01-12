@@ -2,16 +2,19 @@ package com.julia.taskmanagementapp.service.attachment;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import com.julia.taskmanagementapp.dropbox.DropBoxService;
 import com.julia.taskmanagementapp.dto.attachment.AttachmentDto;
+import com.julia.taskmanagementapp.exception.EntityNotFoundException;
 import com.julia.taskmanagementapp.exception.UploadDropBoxException;
 import com.julia.taskmanagementapp.mapper.AttachmentMapper;
 import com.julia.taskmanagementapp.model.Attachment;
@@ -190,6 +193,27 @@ class AttachmentServiceImplTest {
     }
 
     @Test
+    void downloadAttachments_noAttachments_throwException() throws IOException {
+        final HttpServletResponse response = mock(
+                HttpServletResponse.class
+        );
+
+        when(taskRepository.findById(task.getId()))
+                .thenReturn(Optional.of(task));
+        doNothing().when(projectPermissionService)
+                .checkProjectIfCreatorOrCollaborator(task.getProjectId(), USER_ID);
+        when(attachmentRepository.findAllByTaskId(task.getId()))
+                .thenReturn(List.of());
+
+        assertThrows(
+                EntityNotFoundException.class,
+                () -> attachmentService.downloadAttachments(task.getId(), response, USER_ID)
+        );
+
+        verify(attachmentRepository).findAllByTaskId(task.getId());
+    }
+
+    @Test
     void deleteAttachment_valid_deletesAttachment() {
         String fileId = "1234";
 
@@ -209,5 +233,19 @@ class AttachmentServiceImplTest {
         verify(taskRepository).findById(task.getId());
         verify(projectPermissionService)
                 .checkProjectIfCreatorOrCollaborator(task.getProjectId(), USER_ID);
+    }
+
+    @Test
+    void deleteAttachment_noAttachment_throwException() {
+        String fileId = "1234";
+
+        when(attachmentRepository.findByDropboxFileId(fileId))
+                .thenReturn(Optional.empty());
+        assertThrows(
+                EntityNotFoundException.class,
+                () -> attachmentService.deleteAttachment(fileId, USER_ID)
+        );
+
+        verifyNoInteractions(dropBoxService);
     }
 }

@@ -75,7 +75,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectDto update(Long id, UpdateProjectRequestDto requestDto, Long userId) {
         Project project = projectPermissionService.getProjectByIdIfCreator(id, userId);
-        projectMapper.update(project, requestDto);
 
         Set<Long> collaboratorIds = requestDto.collaboratorIds();
         if (collaboratorIds != null) {
@@ -85,6 +84,7 @@ public class ProjectServiceImpl implements ProjectService {
             project.getCollaborators().addAll(collaborators);
         }
 
+        projectMapper.update(project, requestDto);
         Project savedProject = projectRepository.save(project);
 
         notifyUsers(ProjectEventType.PROJECT_UPDATED, savedProject);
