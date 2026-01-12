@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.julia.taskmanagementapp.dto.label.CreateLabelRequestDto;
 import com.julia.taskmanagementapp.dto.label.LabelDto;
 import com.julia.taskmanagementapp.dto.label.UpdateLabelRequestDto;
 import com.julia.taskmanagementapp.exception.EntityAlreadyExistsException;
+import com.julia.taskmanagementapp.exception.ForbiddenAccessException;
 import com.julia.taskmanagementapp.mapper.LabelMapper;
 import com.julia.taskmanagementapp.model.Label;
 import com.julia.taskmanagementapp.model.User;
@@ -121,6 +123,27 @@ class LabelServiceImplTest {
     }
 
     @Test
+    void create_labelColorAlreadyExists_throwsException() {
+        when(labelMapper.trimCreateRequest(createLabelRequestDto))
+                .thenReturn(createLabelDtoTrimmed);
+        when(labelRepository.existsByNameIgnoreCaseAndCreatorId(
+                createLabelDtoTrimmed.name(), userId
+        )).thenReturn(false);
+        when(labelRepository.existsByColorIgnoreCaseAndCreatorId(
+                createLabelDtoTrimmed.color(), userId
+        )).thenReturn(true);
+
+        assertThrows(EntityAlreadyExistsException.class,
+                () -> labelService.create(
+                        createLabelRequestDto, user
+                ));
+
+        verify(labelRepository).existsByNameIgnoreCaseAndCreatorId(
+                createLabelDtoTrimmed.name(), userId
+        );
+    }
+
+    @Test
     void getLabels_validRequest_returnsPageDtos() {
         PageImpl<Label> labels = new PageImpl<>(List.of(label));
         PageImpl<LabelDto> labelDtos = new PageImpl<>(List.of(labelDto));
@@ -136,7 +159,7 @@ class LabelServiceImplTest {
     }
 
     @Test
-    void update() {
+    void update_validRequest_updates() {
         when(labelRepository.findByIdAndCreatorId(1L, userId))
                 .thenReturn(Optional.ofNullable(label));
         when(labelMapper.trimUpdateRequest(updateRequestDto))
@@ -163,7 +186,7 @@ class LabelServiceImplTest {
     }
 
     @Test
-    void delete() {
+    void delete_validRequest_deletes() {
         when(labelRepository.findByIdAndCreatorId(1L, userId))
                 .thenReturn(Optional.ofNullable(label));
         doNothing().when(labelRepository).delete(label);
@@ -173,5 +196,19 @@ class LabelServiceImplTest {
         ));
 
         verify(labelRepository).findByIdAndCreatorId(1L, userId);
+    }
+
+    @Test
+    void delete_noLabelByIdForUser_throwsException() {
+        when(labelRepository.findByIdAndCreatorId(1L, userId))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                ForbiddenAccessException.class,
+                () -> labelService.delete(1L, userId)
+        );
+
+        verify(labelRepository).findByIdAndCreatorId(1L, userId);
+        verifyNoMoreInteractions(labelRepository);
     }
 }

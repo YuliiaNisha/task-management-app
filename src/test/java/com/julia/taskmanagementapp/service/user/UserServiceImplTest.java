@@ -49,7 +49,9 @@ class UserServiceImplTest {
     private User user;
     private User savedUser;
     private UpdateUserRolesRequestDto updateRequestDto;
+    private UpdateUserRolesRequestDto updateRequestEmailPasswordNullDto;
     private UserResponseWithRolesDto responseWithRolesDto;
+    private UserResponseWithRolesDto responseWithSameRolesDto;
     private UserProfileInfoDto userProfileInfoDto;
 
     @BeforeEach
@@ -74,6 +76,11 @@ class UserServiceImplTest {
                 1L, "name", "email",
                 "First", "Last",
                 Set.of("role")
+        );
+        responseWithSameRolesDto = new UserResponseWithRolesDto(
+                1L, "name", "email",
+                "First", "Last",
+                new HashSet<>()
         );
 
         userProfileInfoDto = new UserProfileInfoDto(
@@ -144,6 +151,27 @@ class UserServiceImplTest {
     }
 
     @Test
+    void updateRole_nullRoles_returnsUnchangedUserDto() {
+        when(userRepository.findById(1L)).thenReturn(
+                Optional.of(user)
+        );
+        when(roleRepository.findByRoleIn(updateRequestDto.roles()))
+                .thenReturn(null);
+        when(userMapper.toDtoWithRoles(user))
+                .thenReturn(responseWithSameRolesDto);
+
+        UserResponseWithRolesDto actual = userService.updateRole(1L, updateRequestDto);
+
+        assertEquals(responseWithSameRolesDto, actual);
+        assertEquals(
+                responseWithSameRolesDto.roles(),
+                actual.roles()
+        );
+        verify(roleRepository).findByRoleIn(updateRequestDto.roles());
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
     void getUserProfileInfo_validRequest_returnDto() {
         when(userMapper.toProfileInfo(user))
                 .thenReturn(userProfileInfoDto);
@@ -204,6 +232,55 @@ class UserServiceImplTest {
         assertEquals(updatedUserDto, actual);
         assertNotEquals(oldPassword, user.getPassword());
         assertNotEquals(oldEmail, user.getEmail());
+        assertNotEquals(oldProfileName, user.getProfileUsername());
+        assertNotEquals(oldFirstName, user.getFirstName());
+        assertNotEquals(oldLastName, user.getLastName());
+    }
+
+    @Test
+    void updateProfileInfo_emailPasswordNull_returnDto() {
+        UpdateProfileInfoRequestDto updateRequestDto =
+                new UpdateProfileInfoRequestDto(
+                        "new profileUserName",
+                        null,
+                        null,
+                        null,
+                        "new FirstName",
+                        "new LastName"
+                );
+
+        UserProfileInfoDto updatedUserDto = new UserProfileInfoDto(
+                "new profileUserName",
+                "email", "new FirstName",
+                "new LastName"
+        );
+
+        final String oldPassword = user.getPassword();
+        final String oldEmail = user.getEmail();
+        final String oldProfileName = user.getProfileUsername();
+        final String oldFirstName = user.getFirstName();
+        final String oldLastName = user.getLastName();
+
+        doAnswer(invocation -> {
+                    User user = (User) invocation.getArguments()[0];
+                    UpdateProfileInfoRequestDto updateRequest =
+                            (UpdateProfileInfoRequestDto) invocation.getArguments()[1];
+                    user.setProfileUsername(updateRequest.profileUsername());
+                    user.setFirstName(updateRequest.firstName());
+                    user.setLastName(updateRequest.lastName());
+                    return null;
+                }
+        ).when(userMapper).updateProfileInfo(user, updateRequestDto);
+        when(userRepository.save(user))
+                .thenAnswer(invocation -> invocation.getArguments()[0]);
+        when(userMapper.toProfileInfo(any()))
+                .thenReturn(updatedUserDto);
+
+        UserProfileInfoDto actual = userService.updateProfileInfo(updateRequestDto, user);
+
+        assertEquals(updatedUserDto, actual);
+        assertEquals(oldPassword, user.getPassword());
+        assertEquals(oldEmail, user.getEmail());
         assertNotEquals(oldProfileName, user.getProfileUsername());
         assertNotEquals(oldFirstName, user.getFirstName());
         assertNotEquals(oldLastName, user.getLastName());

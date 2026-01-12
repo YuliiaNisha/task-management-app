@@ -2,8 +2,10 @@ package com.julia.taskmanagementapp.service.comment;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.julia.taskmanagementapp.dto.comment.CommentDto;
@@ -11,6 +13,7 @@ import com.julia.taskmanagementapp.dto.comment.CreateCommentRequestDto;
 import com.julia.taskmanagementapp.event.comment.CommentCreatedEvent;
 import com.julia.taskmanagementapp.event.comment.factory.CommentEventFactory;
 import com.julia.taskmanagementapp.event.comment.factory.CommentEventType;
+import com.julia.taskmanagementapp.exception.EntityNotFoundException;
 import com.julia.taskmanagementapp.mapper.CommentMapper;
 import com.julia.taskmanagementapp.model.Comment;
 import com.julia.taskmanagementapp.model.Project;
@@ -149,6 +152,43 @@ class CommentServiceImplTest {
                 task.getProjectId(), user.getId());
         verify(commentRepository).save(comment);
         verify(publisher).publishEvent(commentCreatedEvent);
+    }
+
+    @Test
+    void create_invalidId_throwsException() {
+        when(taskRepository.findById(createCommentRequestDto.taskId()))
+                .thenReturn(Optional.empty());
+        assertThrows(
+                EntityNotFoundException.class,
+                () -> commentService.create(createCommentRequestDto, user)
+        );
+
+        verifyNoInteractions(
+                projectPermissionService,
+                commentMapper,
+                commentRepository
+        );
+    }
+
+    @Test
+    void create_noAssignee_throwsException() {
+        when(taskRepository.findById(createCommentRequestDto.taskId()))
+                .thenReturn(Optional.of(task));
+        when(projectPermissionService.getProjectByIdIfCreatorOrCollaborator(
+                task.getProjectId(), user.getId()))
+                .thenReturn(project);
+        when(commentMapper.toModel(createCommentRequestDto))
+                .thenReturn(comment);
+        when(commentRepository.save(comment)).thenReturn(savedComment);
+        when(userRepository.findById(task.getAssigneeId()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                EntityNotFoundException.class,
+                () -> commentService.create(createCommentRequestDto, user)
+        );
+
+        verifyNoInteractions(publisher);
     }
 
     @Test

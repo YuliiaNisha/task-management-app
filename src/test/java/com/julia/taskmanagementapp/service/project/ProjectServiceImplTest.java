@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.julia.taskmanagementapp.dto.project.CreateProjectRequestDto;
@@ -71,6 +72,7 @@ class ProjectServiceImplTest {
     private Long userId = 1L;
     private Pageable pageable = PageRequest.of(0, 10);
     private UpdateProjectRequestDto updateRequestDto;
+    private UpdateProjectRequestDto updateRequestCollabIdsNullDto;
     private ProjectSearchParameters searchParameters;
     private ProjectSearchParametersWithUserId paramsWithUserId;
 
@@ -116,6 +118,14 @@ class ProjectServiceImplTest {
                 LocalDate.of(2026, 02,20),
                 Project.Status.IN_PROGRESS.name(),
                 Set.of(2L)
+        );
+
+        updateRequestCollabIdsNullDto = new UpdateProjectRequestDto(
+                "project", "description",
+                LocalDate.now(),
+                LocalDate.of(2026, 02,20),
+                Project.Status.IN_PROGRESS.name(),
+                null
         );
 
         searchParameters = new ProjectSearchParameters(
@@ -222,9 +232,9 @@ class ProjectServiceImplTest {
 
         when(projectPermissionService.getProjectByIdIfCreator(1L, userId))
                 .thenReturn(project);
-        doNothing().when(projectMapper).update(project, updateRequestDto);
         when(userRepository.findAllById(updateRequestDto.collaboratorIds()))
                 .thenReturn(List.of(collaborator));
+        doNothing().when(projectMapper).update(project, updateRequestDto);
         when(projectRepository.save(project))
                 .thenReturn(savedProject);
         when(projectEventFactory.create(ProjectEventType.PROJECT_UPDATED, savedProject))
@@ -233,6 +243,52 @@ class ProjectServiceImplTest {
                 .thenReturn(projectDto);
 
         ProjectDto actual = projectService.update(1L, updateRequestDto, userId);
+
+        assertEquals(projectDto, actual);
+
+        verify(publisher).publishEvent(projectUpdatedEvent);
+    }
+
+    @Test
+    void update_creatorAsCollaborator_throwsException() {
+        when(projectPermissionService.getProjectByIdIfCreator(1L, 2L))
+                .thenReturn(project);
+
+        assertThrows(EntityAlreadyExistsException.class,
+                () -> projectService.update(1L, updateRequestDto, 2L));
+
+        verifyNoInteractions(projectRepository);
+    }
+
+    @Test
+    void update_collabIdsNull_returnsProjectDto() {
+        ProjectUpdatedEvent projectUpdatedEvent = new ProjectUpdatedEvent(
+                Map.of("email", "First"),
+                project.getName(),
+                String.join(
+                        " ",
+                        project.getCreator().getFirstName(),
+                        project.getCreator().getLastName()
+                ),
+                project.getEndDate().toString(),
+                project.getId().toString()
+        );
+
+        when(projectPermissionService.getProjectByIdIfCreator(1L, userId))
+                .thenReturn(project);
+        doNothing().when(projectMapper).update(
+                project, updateRequestCollabIdsNullDto
+        );
+        when(projectRepository.save(project))
+                .thenReturn(savedProject);
+        when(projectEventFactory.create(ProjectEventType.PROJECT_UPDATED, savedProject))
+                .thenReturn(projectUpdatedEvent);
+        when(projectMapper.toDto(savedProject))
+                .thenReturn(projectDto);
+
+        ProjectDto actual = projectService.update(
+                1L, updateRequestCollabIdsNullDto, userId
+        );
 
         assertEquals(projectDto, actual);
 
