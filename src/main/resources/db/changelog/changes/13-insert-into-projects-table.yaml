@@ -1,0 +1,129 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-projects
+      author: julia
+      changes:
+        - insert:
+            tableName: projects
+            columns:
+              - column:
+                  name: name
+                  value: Project A
+              - column:
+                  name: description
+                  value: This is a sample project A
+              - column:
+                  name: start_date
+                  value: "2025-10-23"
+              - column:
+                  name: end_date
+                  value: "2025-12-31"
+              - column:
+                  name: status
+                  value: INITIATED
+              - column:
+                  name: created_by_id
+                  valueNumeric: 1
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: projects
+            columns:
+              - column:
+                  name: name
+                  value: Project B
+              - column:
+                  name: description
+                  value: This is a sample project B
+              - column:
+                  name: start_date
+                  value: "2025-11-01"
+              - column:
+                  name: end_date
+                  value: "2026-01-15"
+              - column:
+                  name: status
+                  value: IN_PROGRESS
+              - column:
+                  name: created_by_id
+                  valueNumeric: 2
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: projects
+            columns:
+              - column:
+                  name: name
+                  value: Project C
+              - column:
+                  name: description
+                  value: This is a sample project C
+              - column:
+                  name: start_date
+                  value: "2025-11-01"
+              - column:
+                  name: end_date
+                  value: "2026-01-15"
+              - column:
+                  name: status
+                  value: IN_PROGRESS
+              - column:
+                  name: created_by_id
+                  valueNumeric: 3
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: projects
+            columns:
+              - column:
+                  name: name
+                  value: Project D
+              - column:
+                  name: description
+                  value: This is a sample project D
+              - column:
+                  name: start_date
+                  value: "2025-11-01"
+              - column:
+                  name: end_date
+                  value: "2026-01-15"
+              - column:
+                  name: status
+                  value: IN_PROGRESS
+              - column:
+                  name: created_by_id
+                  valueNumeric: 1
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: projects
+            columns:
+              - column:
+                  name: name
+                  value: Project E
+              - column:
+                  name: description
+                  value: This is a sample project E
+              - column:
+                  name: start_date
+                  value: "2025-11-01"
+              - column:
+                  name: end_date
+                  value: "2026-01-15"
+              - column:
+                  name: status
+                  value: IN_PROGRESS
+              - column:
+                  name: created_by_id
+                  valueNumeric: 1
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

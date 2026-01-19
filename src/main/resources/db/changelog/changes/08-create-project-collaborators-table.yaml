@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-project-collaborators-table
+      author: julia
+      changes:
+        - createTable:
+            tableName: project_collaborators
+            columns:
+              - column:
+                  name: project_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_project_collaborators_project
+                    references: projects(id)
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_project_collaborators_user
+                    references: users(id)
+
+              - addPrimaryKey:
+                  tableName: project_collaborators
+                  columnNames: project_id, user_id
+                  constraintName: pk_project_collaborators

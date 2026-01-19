@@ -1,0 +1,136 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users
+      author: julia
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: profile_username
+                  value: admin
+              - column:
+                  name: password
+                  value: $2a$10$hGbu6KottCANelLyy4C9.OrmqvoubbdibTI8/eGgHswHplO4O3ZKS
+              - column:
+                  name: email
+                  value: admin@gmail.com
+              - column:
+                  name: first_name
+                  value: Admin
+              - column:
+                  name: last_name
+                  value: User
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: profile_username
+                  value: john_thomson
+              - column:
+                  name: password
+                  value: $2a$10$hGbu6KottCANelLyy4C9.OrmqvoubbdibTI8/eGgHswHplO4O3ZKS
+              - column:
+                  name: email
+                  value: johnthomson@gmail.com
+              - column:
+                  name: first_name
+                  value: John
+              - column:
+                  name: last_name
+                  value: Thomson
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: profile_username
+                  value: jane_smith
+              - column:
+                  name: password
+                  value: $2a$10$hGbu6KottCANelLyy4C9.OrmqvoubbdibTI8/eGgHswHplO4O3ZKS
+              - column:
+                  name: email
+                  value: janesmith@gmail.com
+              - column:
+                  name: first_name
+                  value: Jane
+              - column:
+                  name: last_name
+                  value: Smith
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: profile_username
+                  value: kate_boss
+              - column:
+                  name: password
+                  value: $2a$10$hGbu6KottCANelLyy4C9.OrmqvoubbdibTI8/eGgHswHplO4O3ZKS
+              - column:
+                  name: email
+                  value: kateboss@gmail.com
+              - column:
+                  name: first_name
+                  value: Kate
+              - column:
+                  name: last_name
+                  value: Boss
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: profile_username
+                  value: ken_dave
+              - column:
+                  name: password
+                  value: $2a$10$hGbu6KottCANelLyy4C9.OrmqvoubbdibTI8/eGgHswHplO4O3ZKS
+              - column:
+                  name: email
+                  value: kendave@gmail.com
+              - column:
+                  name: first_name
+                  value: Ken
+              - column:
+                  name: last_name
+                  value: Dave
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: profile_username
+                  value: inna_dobra
+              - column:
+                  name: password
+                  value: $2a$10$hGbu6KottCANelLyy4C9.OrmqvoubbdibTI8/eGgHswHplO4O3ZKS
+              - column:
+                  name: email
+                  value: innadobra@gmail.com
+              - column:
+                  name: first_name
+                  value: Inna
+              - column:
+                  name: last_name
+                  value: Dobra
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

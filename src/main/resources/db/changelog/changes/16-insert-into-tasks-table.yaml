@@ -1,0 +1,228 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-tasks
+      author: julia
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: name
+                  value: Project A task 1
+              - column:
+                  name: description
+                  value: Create the homepage layout and design
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: status
+                  value: NOT_STARTED
+              - column:
+                  name: due_date
+                  value: "2025-11-15"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project A')"
+              - column:
+                  name: assignee_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'johnthomson@gmail.com')"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: name
+                  value: Project B task 1
+              - column:
+                  name: description
+                  value: Create the homepage layout and design
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: status
+                  value: NOT_STARTED
+              - column:
+                  name: due_date
+                  value: "2025-11-15"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project B')"
+              - column:
+                  name: assignee_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'janesmith@gmail.com')"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: name
+                  value: Project B task 2
+              - column:
+                  name: description
+                  value: Create the homepage layout and design
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: status
+                  value: NOT_STARTED
+              - column:
+                  name: due_date
+                  value: "2025-11-15"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project B')"
+              - column:
+                  name: assignee_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kateboss@gmail.com')"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: name
+                  value: Project B task 3
+              - column:
+                  name: description
+                  value: Create the homepage layout and design
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: status
+                  value: NOT_STARTED
+              - column:
+                  name: due_date
+                  value: "2025-11-15"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project B')"
+              - column:
+                  name: assignee_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kendave@gmail.com')"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: name
+                  value: Project C task 1
+              - column:
+                  name: description
+                  value: Create the homepage layout and design
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: status
+                  value: NOT_STARTED
+              - column:
+                  name: due_date
+                  value: "2025-11-15"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project C')"
+              - column:
+                  name: assignee_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'innadobra@gmail.com')"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: name
+                  value: Project C task 2
+              - column:
+                  name: description
+                  value: Create the homepage layout and design
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: status
+                  value: NOT_STARTED
+              - column:
+                  name: due_date
+                  value: "2025-11-15"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project C')"
+              - column:
+                  name: assignee_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kendave@gmail.com')"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: name
+                  value: Project D task 1
+              - column:
+                  name: description
+                  value: Create the homepage layout and design
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: status
+                  value: NOT_STARTED
+              - column:
+                  name: due_date
+                  value: "2025-11-15"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project D')"
+              - column:
+                  name: assignee_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'janesmith@gmail.com')"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: name
+                  value: Project D task 2
+              - column:
+                  name: description
+                  value: Create the homepage layout and design
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: status
+                  value: NOT_STARTED
+              - column:
+                  name: due_date
+                  value: "2025-11-15"
+              - column:
+                  name: project_id
+                  valueComputed: "(SELECT id FROM projects WHERE name = 'Project D')"
+              - column:
+                  name: assignee_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'kateboss@gmail.com')"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
