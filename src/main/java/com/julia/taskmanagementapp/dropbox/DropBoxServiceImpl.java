@@ -19,21 +19,19 @@ import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@ConfigurationProperties(prefix = "dropbox")
 public class DropBoxServiceImpl implements DropBoxService {
     private static final long CHUNKED_UPLOAD_CHUNK_SIZE = 8L << 20;
     private static final int CHUNKED_UPLOAD_MAX_ATTEMPTS = 5;
     private static final String CLIENT_IDENTIFIER = "task_management_application";
     private DbxClientV2 dbxClient;
-    @Value("${dropbox.appKey:dummy-key}")
     private String appKey;
-    @Value("${dropbox.appSecret:dummy-secret}")
     private String appSecret;
-    @Value("${dropbox.refreshToken:dummy-token}")
     private String refreshToken;
 
     @PostConstruct
