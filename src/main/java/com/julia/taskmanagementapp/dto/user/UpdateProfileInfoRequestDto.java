@@ -10,9 +10,9 @@ import jakarta.validation.constraints.Size;
         message = "Password and repeat password must match")
 public record UpdateProfileInfoRequestDto(
         String profileUsername,
-        @Size(min = 8, max = 25, message = "Password must be between 8 and 25 digits")
+        @Size(min = 8, max = 25, message = "Password must be between {min} and {max} digits")
         String password,
-        @Size(min = 8, max = 25, message = "Password must be between 8 and 25 digits")
+        @Size(min = 8, max = 25, message = "Password must be between {min} and {max} digits")
         String repeatPassword,
         @Email(message = "Invalid format of email.")
         String email,

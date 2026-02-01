@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,7 +97,7 @@ class TaskController {
     )
     @GetMapping
     public Page<TaskDto> getTasksForProject(
-            @RequestParam Long projectId,
+            @RequestParam @Positive(message = "ID must be positive") Long projectId,
             @AuthenticationPrincipal User user,
             Pageable pageable
     ) {
@@ -135,7 +136,7 @@ class TaskController {
     )
     @GetMapping("/{id}")
     public TaskDto getTaskById(
-            @PathVariable Long id,
+            @PathVariable @Positive(message = "ID must be positive") Long id,
             @AuthenticationPrincipal User user
     ) {
         return taskService.getTaskById(id, user.getId());
@@ -172,7 +173,7 @@ class TaskController {
     )
     @PutMapping("/{id}")
     public TaskDto update(
-            @PathVariable Long id,
+            @PathVariable @Positive(message = "ID must be positive") Long id,
             @RequestBody @Valid UpdateTaskRequestDto requestDto,
             @AuthenticationPrincipal User user
     ) {
@@ -207,7 +208,7 @@ class TaskController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-            @PathVariable Long id,
+            @PathVariable @Positive(message = "ID must be positive") Long id,
             @AuthenticationPrincipal User user
     ) {
         taskService.delete(id, user.getId());
@@ -243,8 +244,8 @@ class TaskController {
     )
     @PostMapping("/{taskId}/labels/{labelId}")
     public TaskDto assignLabelToTask(
-            @PathVariable Long taskId,
-            @PathVariable Long labelId,
+            @PathVariable @Positive(message = "ID must be positive") Long taskId,
+            @PathVariable @Positive(message = "ID must be positive") Long labelId,
             @AuthenticationPrincipal User user
     ) {
         return taskService.assignLabelToTask(taskId, labelId, user.getId());
@@ -281,8 +282,8 @@ class TaskController {
     )
     @DeleteMapping("/{taskId}/labels/{labelId}")
     public TaskDto removeLabelFromTask(
-            @PathVariable Long taskId,
-            @PathVariable Long labelId,
+            @PathVariable @Positive(message = "ID must be positive") Long taskId,
+            @PathVariable @Positive(message = "ID must be positive") Long labelId,
             @AuthenticationPrincipal User user
     ) {
         return taskService.removeLabelFromTask(taskId,labelId, user.getId());

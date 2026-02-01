@@ -10,7 +10,7 @@ public record UserLoginRequestDto(
         String email,
 
         @NotBlank(message = "Password is required. Please provide your password.")
-        @Size(min = 8, max = 25, message = "Password must be between 8 and 25 digits")
+        @Size(min = 8, max = 25, message = "Password must be between {min} and {max} digits")
         String password
 ) {
 }

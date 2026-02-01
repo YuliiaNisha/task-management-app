@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -89,7 +90,7 @@ public class CommentController {
     )
     @GetMapping("/{taskId}")
     public Page<CommentDto> getCommentsByTaskId(
-            @PathVariable Long taskId,
+            @PathVariable @Positive(message = "ID must be positive") Long taskId,
             @AuthenticationPrincipal User user,
             Pageable pageable
     ) {
