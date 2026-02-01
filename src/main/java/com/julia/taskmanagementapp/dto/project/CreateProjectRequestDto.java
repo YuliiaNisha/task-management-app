@@ -7,20 +7,19 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Set;
-import org.springframework.format.annotation.DateTimeFormat;
 
 public record CreateProjectRequestDto(
+        @Size(max = 255, message = "Project name must be less than {max} characters")
         @NotBlank(message = "Project name is required")
         String name,
-        @Size(max = 1000, message = "Description must be less than 1000 characters")
+        @Size(max = 255, message = "Description must be less than {max} characters")
         String description,
         @NotNull(message = "Start date is required")
         LocalDate startDate,
         @NotNull(message = "End date is required")
         @FutureOrPresent(message = "End date cannot be in the past")
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         LocalDate endDate,
         @UserIdsExistInDb
-        Set<Long> collaboratorIds
+        Set<@NotNull Long> collaboratorIds
 ) {
 }

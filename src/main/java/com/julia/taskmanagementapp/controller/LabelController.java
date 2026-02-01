@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -112,8 +113,8 @@ public class LabelController {
     )
     @PutMapping("/{id}")
     public LabelDto update(
-            @PathVariable Long id,
-            @RequestBody UpdateLabelRequestDto requestDto,
+            @PathVariable @Positive(message = "ID must be positive") Long id,
+            @RequestBody @Valid UpdateLabelRequestDto requestDto,
             @AuthenticationPrincipal User user
     ) {
         return labelService.update(id, requestDto, user.getId());
@@ -145,7 +146,7 @@ public class LabelController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-            @PathVariable Long id,
+            @PathVariable @Positive(message = "ID must be positive") Long id,
             @AuthenticationPrincipal User user
     ) {
         labelService.delete(id, user.getId());

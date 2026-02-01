@@ -41,8 +41,8 @@ public class AuthenticationController {
             }
     )
     @PostMapping("/registration")
-    UserResponseDto registerUser(
-            @RequestBody UserRegistrationRequestDto requestDto
+    public UserResponseDto registerUser(
+            @RequestBody @Valid UserRegistrationRequestDto requestDto
     ) {
         return userService.registerUser(requestDto);
     }
@@ -66,7 +66,7 @@ public class AuthenticationController {
             }
     )
     @PostMapping("/login")
-    UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto) {
+    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto) {
         return authenticationService.authenticate(requestDto);
     }
 }

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -114,7 +115,7 @@ public class ProjectController {
     )
     @GetMapping("/{id}")
     public ProjectDto getProjectById(
-            @PathVariable Long id,
+            @PathVariable @Positive(message = "ID must be positive") Long id,
             @AuthenticationPrincipal User user
     ) {
         return projectService.getProjectById(id, user.getId());
@@ -150,7 +151,7 @@ public class ProjectController {
     )
     @PutMapping("/{id}")
     public ProjectDto update(
-            @PathVariable Long id,
+            @PathVariable @Positive(message = "ID must be positive") Long id,
             @RequestBody @Valid UpdateProjectRequestDto requestDto,
             @AuthenticationPrincipal User user
     ) {
@@ -184,7 +185,7 @@ public class ProjectController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-            @PathVariable Long id,
+            @PathVariable @Positive(message = "ID must be positive") Long id,
             @AuthenticationPrincipal User user
     ) {
         projectService.delete(id, user.getId());
