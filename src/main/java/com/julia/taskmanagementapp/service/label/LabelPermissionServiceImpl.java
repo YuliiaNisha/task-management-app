@@ -7,12 +7,14 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 public class LabelPermissionServiceImpl implements LabelPermissionService {
     private final LabelRepository labelRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public void checkLabelsIfCreator(Set<Long> labelIds, Long userId) {
         long count = labelRepository.countByIdInAndCreatorId(labelIds, userId);
@@ -23,6 +25,7 @@ public class LabelPermissionServiceImpl implements LabelPermissionService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Label findLabelIfCreator(Long labelId, Long userId) {
         Optional<Label> labelOptional = labelRepository.findByIdAndCreatorId(labelId, userId);

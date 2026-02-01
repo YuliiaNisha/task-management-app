@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +21,7 @@ public class LabelServiceImpl implements LabelService {
     private final LabelRepository labelRepository;
     private final LabelMapper labelMapper;
 
+    @Transactional
     @Override
     public LabelDto create(CreateLabelRequestDto requestDto, User user) {
         CreateLabelRequestDto trimmedRequestDto = labelMapper.trimCreateRequest(requestDto);
@@ -29,12 +31,14 @@ public class LabelServiceImpl implements LabelService {
         return labelMapper.toDto(labelRepository.save(label));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<LabelDto> getLabels(Long userId, Pageable pageable) {
         return labelRepository.findAllByCreatorId(userId, pageable)
                 .map(labelMapper::toDto);
     }
 
+    @Transactional
     @Override
     public LabelDto update(Long id, UpdateLabelRequestDto requestDto, Long userId) {
         Label label = getLabelForUser(id, userId);
@@ -48,6 +52,7 @@ public class LabelServiceImpl implements LabelService {
         return labelMapper.toDto(labelRepository.save(label));
     }
 
+    @Transactional
     @Override
     public void delete(Long id, Long userId) {
         Label label = getLabelForUser(id, userId);

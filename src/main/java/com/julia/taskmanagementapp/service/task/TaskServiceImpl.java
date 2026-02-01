@@ -19,7 +19,6 @@ import com.julia.taskmanagementapp.repository.SpecificationBuilder;
 import com.julia.taskmanagementapp.repository.TaskRepository;
 import com.julia.taskmanagementapp.service.label.LabelPermissionService;
 import com.julia.taskmanagementapp.service.project.ProjectPermissionService;
-import jakarta.transaction.Transactional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -27,6 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +42,7 @@ public class TaskServiceImpl implements TaskService {
             Task, TaskSearchParametersWithAssigneeId
             > specificationBuilder;
 
+    @Transactional
     @Override
     public TaskDto create(CreateTaskRequestDto requestDto, Long userId) {
         final Project project = projectPermissionService.getProjectByIdIfCreator(
@@ -65,6 +66,7 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toDto(savedTask);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<TaskDto> getTasksForProject(Long projectId, Long userId, Pageable pageable) {
         projectPermissionService.checkProjectIfCreatorOrCollaborator(
@@ -74,6 +76,7 @@ public class TaskServiceImpl implements TaskService {
                 .map(taskMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public TaskDto getTaskById(Long id, Long userId) {
         Task task = findTaskById(id);
@@ -104,6 +107,7 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toDto(savedTask);
     }
 
+    @Transactional
     @Override
     public void delete(Long id, Long userId) {
         Task task = findTaskById(id);
@@ -158,6 +162,7 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toDto(savedTask);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<TaskDto> search(
             TaskSearchParameters taskSearchParameters,

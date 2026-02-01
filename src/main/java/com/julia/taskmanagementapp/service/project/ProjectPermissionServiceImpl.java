@@ -7,17 +7,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 public class ProjectPermissionServiceImpl implements ProjectPermissionService {
     private final ProjectRepository projectRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public Page<Project> getProjectsIfCreatorOrCollaborator(Long userId, Pageable pageable) {
         return projectRepository.findAllByCreatorOrCollaborators(userId, pageable);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Project getProjectByIdIfCreatorOrCollaborator(Long projectId, Long userId) {
         return projectRepository.findByIdAndCreatorAndCollaborators(
@@ -29,6 +32,7 @@ public class ProjectPermissionServiceImpl implements ProjectPermissionService {
         );
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void checkProjectIfCreatorOrCollaborator(Long projectId, Long userId) {
         if (!projectRepository.existsByIdAndCreatorAndCollaborators(projectId, userId)) {
@@ -38,6 +42,7 @@ public class ProjectPermissionServiceImpl implements ProjectPermissionService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void checkProjectIfCollaborator(Long projectId, Long userId) {
         if (!projectRepository.existsByIdAndCollaborator(projectId, userId)) {
@@ -48,6 +53,7 @@ public class ProjectPermissionServiceImpl implements ProjectPermissionService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void checkProjectIfCreator(Long projectId, Long userId) {
         if (!projectRepository.existsByIdAndCreator(projectId, userId)) {
@@ -57,6 +63,7 @@ public class ProjectPermissionServiceImpl implements ProjectPermissionService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Project getProjectByIdIfCreator(Long projectId, Long userId) {
         return projectRepository.findByIdAndCreator(projectId, userId)
