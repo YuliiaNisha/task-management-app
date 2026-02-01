@@ -20,6 +20,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -32,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
     private final ApplicationEventPublisher publisher;
     private final CommentEventFactory commentEventFactory;
 
+    @Transactional
     @Override
     public CommentDto create(CreateCommentRequestDto requestDto, User user) {
         Task task = getTaskById(requestDto.taskId());
@@ -55,6 +57,7 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toDto(savedComment);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<CommentDto> getCommentsByTaskId(Long taskId, Long userId, Pageable pageable) {
         Task task = getTaskById(taskId);
@@ -65,6 +68,7 @@ public class CommentServiceImpl implements CommentService {
                 .map(commentMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     private Task getTaskById(Long taskId) {
         return taskRepository.findById(taskId).orElseThrow(
                 () -> new EntityNotFoundException(

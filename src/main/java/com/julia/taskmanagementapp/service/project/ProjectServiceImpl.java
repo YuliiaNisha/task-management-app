@@ -14,7 +14,6 @@ import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.repository.ProjectRepository;
 import com.julia.taskmanagementapp.repository.SpecificationBuilder;
 import com.julia.taskmanagementapp.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +37,7 @@ public class ProjectServiceImpl implements ProjectService {
             Project, ProjectSearchParametersWithUserId
             > specificationBuilder;
 
+    @Transactional
     @Override
     public ProjectDto create(CreateProjectRequestDto requestDto, User user) {
         Project project = projectMapper.toModel(requestDto);
@@ -55,6 +56,7 @@ public class ProjectServiceImpl implements ProjectService {
         return projectMapper.toDto(savedProject);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<ProjectDto> getUserProjects(Long userId, Pageable pageable) {
         return projectPermissionService.getProjectsIfCreatorOrCollaborator(
@@ -63,6 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(projectMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ProjectDto getProjectById(Long projectId, Long userId) {
         Project project = projectPermissionService.getProjectByIdIfCreatorOrCollaborator(
@@ -92,6 +95,7 @@ public class ProjectServiceImpl implements ProjectService {
         return projectMapper.toDto(savedProject);
     }
 
+    @Transactional
     @Override
     public void delete(Long id, Long userId) {
         Project project = projectPermissionService.getProjectByIdIfCreator(id, userId);
@@ -100,6 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
         notifyUsers(ProjectEventType.PROJECT_DELETED, project);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<ProjectDto> search(
             ProjectSearchParameters searchParameters, Pageable pageable, Long userId

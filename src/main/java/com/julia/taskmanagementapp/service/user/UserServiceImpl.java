@@ -13,11 +13,11 @@ import com.julia.taskmanagementapp.model.Role;
 import com.julia.taskmanagementapp.model.User;
 import com.julia.taskmanagementapp.repository.RoleRepository;
 import com.julia.taskmanagementapp.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     @Override
     public UserResponseDto registerUser(
             UserRegistrationRequestDto requestDto
@@ -38,7 +39,8 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
-    
+
+    @Transactional
     @Override
     public UserResponseWithRolesDto updateRole(Long id, UpdateUserRolesRequestDto requestDto) {
         User user = userRepository.findById(id).orElseThrow(
@@ -52,6 +54,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDtoWithRoles(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserProfileInfoDto getUserProfileInfo(User user) {
         return userMapper.toProfileInfo(user);
@@ -89,7 +92,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(
                         () -> new EntityNotFoundException(
                                 "There is no role by name "
-                                        + Role.RoleName.ROLE_USER.toString()
+                                        + Role.RoleName.ROLE_USER.name()
                         )
                 );
     }
