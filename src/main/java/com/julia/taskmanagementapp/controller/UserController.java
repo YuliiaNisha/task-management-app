@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -53,8 +54,8 @@ public class UserController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/role")
-    UserResponseWithRolesDto updateRole(
-            @PathVariable Long id,
+    public UserResponseWithRolesDto updateRole(
+            @PathVariable @Positive(message = "ID must be positive") Long id,
             @RequestBody @Valid UpdateUserRolesRequestDto requestDto
     ) {
         return userService.updateRole(id, requestDto);
@@ -75,7 +76,7 @@ public class UserController {
             }
     )
     @GetMapping("/me")
-    UserProfileInfoDto getUserProfileInfo(@AuthenticationPrincipal User authenticatedUser) {
+    public UserProfileInfoDto getUserProfileInfo(@AuthenticationPrincipal User authenticatedUser) {
         return userService.getUserProfileInfo(authenticatedUser);
     }
 
@@ -103,7 +104,7 @@ public class UserController {
             }
     )
     @PatchMapping("/me")
-    UserProfileInfoDto updateProfileInfo(
+    public UserProfileInfoDto updateProfileInfo(
             @RequestBody @Valid UpdateProfileInfoRequestDto requestDto,
             @AuthenticationPrincipal User authenticatedUser) {
         return userService.updateProfileInfo(requestDto, authenticatedUser);

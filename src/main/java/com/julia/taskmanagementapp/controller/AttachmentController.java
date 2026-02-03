@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -63,7 +65,7 @@ public class AttachmentController {
     )
     @PostMapping
     public List<AttachmentDto> addAttachmentToTask(
-            @RequestParam("taskId") Long taskId,
+            @RequestParam("taskId") @Positive(message = "ID must be positive") Long taskId,
             @RequestParam("file") List<MultipartFile> files,
             @AuthenticationPrincipal User user
     ) {
@@ -101,7 +103,7 @@ public class AttachmentController {
     )
     @GetMapping
     public void downloadTaskAttachments(
-            @RequestParam ("taskId") Long taskId,
+            @RequestParam ("taskId") @Positive(message = "ID must be positive") Long taskId,
             HttpServletResponse response,
             @AuthenticationPrincipal User user
     ) {
@@ -140,7 +142,7 @@ public class AttachmentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping
     public void deleteAttachment(
-            @RequestParam ("dropboxFileId") String dropboxFileId,
+            @RequestParam ("dropboxFileId") @NotBlank String dropboxFileId,
             @AuthenticationPrincipal User user
     ) {
         attachmentService.deleteAttachment(dropboxFileId, user.getId());

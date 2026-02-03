@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     private final TaskRepository taskRepository;
     private final ProjectPermissionService projectPermissionService;
 
+    @Transactional
     @Override
     public List<AttachmentDto> addAttachmentToTask(
             Long taskId, List<MultipartFile> files, Long userId
@@ -66,6 +68,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         return attachmentDtos;
     }
 
+    @Transactional
     @Override
     public void downloadAttachments(Long taskId, HttpServletResponse response, Long userId) {
         checkUserHasPermissionToModifyTask(taskId, userId);
@@ -95,6 +98,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteAttachment(String dropboxFileId, Long userId) {
         Attachment attachment = attachmentRepository.findByDropboxFileId(dropboxFileId).orElseThrow(

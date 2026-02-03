@@ -16,9 +16,9 @@ import java.util.Set;
 )
 public record CreateTaskRequestDto(
         @NotBlank(message = "Task name is required")
+        @Size(max = 255, message = "Task name must be less than {max} characters")
         String name,
-        @NotBlank(message = "Description is required")
-        @Size(max = 1000, message = "Description must be less than 1000 characters")
+        @Size(max = 1000, message = "Description must be less than {max} characters")
         String description,
         @NotBlank(message = "Priority is required")
         String priority,
@@ -29,6 +29,6 @@ public record CreateTaskRequestDto(
         Long projectId,
         @NotNull(message = "Assignee id is required")
         Long assigneeId,
-        Set<Long> labelIds
+        Set<@NotNull Long> labelIds
 ) {
 }
